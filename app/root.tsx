@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { DatePicker } from "antd";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,6 +34,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <h1 className="text-2xl">App</h1>
+        <DatePicker />
+
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -42,6 +46,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+
+
   return <Outlet />;
 }
 
