@@ -20,6 +20,7 @@ import {
   LogoutOutlined,
   ProfileOutlined,
   MenuOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -36,7 +37,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Montagu+Slab:opsz,wght@16..144,100..900&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap",
   },
 ];
 
@@ -73,35 +74,41 @@ export default function App() {
   // Menu items configuration (without logout)
   const menuItems = [
     {
-      key: "/appointments",
-      icon: <CalendarOutlined />,
-      label: "Appointments",
+      key: '/',
+      icon: <HomeOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Home</span>,
+      title: "Dashboard"
+    },
+    {
+      key: '/appointment-manager',
+      icon: <CalendarOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Appointments</span>,
       title: "Appointment Manager"
     },
     {
-      key: "/invoicing",
-      icon: <FileTextOutlined />,
-      label: "Invoicing",
-      title: "Invoicing"
-    },
-    {
-      key: "/crm",
-      icon: <TeamOutlined />,
-      label: "CRM",
+      key: '/crm',
+      icon: <FileTextOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>CRM</span>,
       title: "CRM"
     },
     {
-      key: "/employees",
-      icon: <UserOutlined />,
-      label: "Employees",
+      key: '/employee-manager',
+      icon: <TeamOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Employees</span>,
       title: "Employee Manager"
     },
     {
-      key: "/services",
-      icon: <ToolOutlined />,
-      label: "Services",
-      title: "Service Manager"
-    }
+      key: '/inventory',
+      icon: <ToolOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Inventory</span>,
+      title: "Inventory"
+    },
+    {
+      key: '/reports',
+      icon: <FileTextOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Reports</span>,
+      title: "Reports"
+    },
   ];
 
   // Update title based on current route
@@ -131,29 +138,36 @@ export default function App() {
     {
       key: 'mode-toggle',
       label: <ModeToggle />,
-      disabled: true,
-      style: { padding: 0, margin: 0 }
+      style: { padding: 0 }
     },
     {
       key: 'theme-switcher',
       label: <ThemeSwitcher />,
-      disabled: true,
-      style: { padding: 0, margin: 0 }
+      style: { padding: 0 }
     },
     {
-      type: 'divider' as const,
-      style: { margin: 0, borderColor: 'var(--theme-border)' }
+      type: 'divider' as const
     },
     {
       key: 'profile',
-      icon: <ProfileOutlined style={{ fontSize: '18px' }} />,
-      label: <span style={{ fontSize: '16px', padding: '4px 0' }}>Profile</span>,
+      icon: <ProfileOutlined style={{ fontSize: '18px', fontWeight: '500' }} />,
+      label: <span style={{ 
+        fontSize: '15px', 
+        fontFamily: 'var(--font-primary)',
+        fontWeight: 'var(--font-weight-medium)',
+        padding: '4px 0' 
+      }}>Profile</span>,
       style: { padding: '12px 16px' }
     },
     {
       key: 'settings',
-      icon: <SettingOutlined style={{ fontSize: '18px' }} />,
-      label: <span style={{ fontSize: '16px', padding: '4px 0' }}>Settings</span>,
+      icon: <SettingOutlined style={{ fontSize: '18px', fontWeight: '500' }} />,
+      label: <span style={{ 
+        fontSize: '15px', 
+        fontFamily: 'var(--font-primary)',
+        fontWeight: 'var(--font-weight-medium)',
+        padding: '4px 0' 
+      }}>Settings</span>,
       style: { padding: '12px 16px' }
     },
   ];
@@ -174,7 +188,9 @@ export default function App() {
       {/* Desktop Sidebar */}
       {!isMobile && (
         <Sider 
-          collapsed={true} 
+          collapsed={true}
+          width={140}
+          collapsedWidth={80}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -199,8 +215,8 @@ export default function App() {
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            fontWeight: 'bold',
-            fontFamily: '"Montagu Slab", serif'
+            fontWeight: 'var(--font-weight-semibold)',
+            fontFamily: 'var(--font-heading)'
           }}>
             S
           </div>
@@ -213,7 +229,8 @@ export default function App() {
           flexDirection: 'column',
           justifyContent: 'space-between',
           alignItems: 'center',
-          minHeight: 'calc(100vh - 64px)' // Account for logo area height
+          minHeight: 'calc(100vh - 64px)', // Account for logo area height
+          paddingTop: '32px'
         }}>
           <div>
             <Menu
@@ -223,12 +240,18 @@ export default function App() {
               style={{ 
                 border: 'none',
                 backgroundColor: 'transparent',
-                color: 'var(--theme-text)'
+                color: 'var(--theme-text)',
+                fontFamily: 'var(--font-primary)',
+                fontWeight: 'var(--font-weight-medium)',
+                fontSize: '15px'
               }}
               items={menuItems.map(item => ({
-                key: item.key,
-                icon: item.icon,
-                label: item.label
+                ...item,
+                style: { 
+                  height: '40px',
+                  lineHeight: '40px',
+                  marginBottom: '4px'
+                }
               }))}
             />
           </div>
@@ -313,23 +336,28 @@ export default function App() {
       
       <AntLayout>
         <Header style={{ 
-          padding: '0 24px', 
-          background: 'var(--theme-surface)',
+          backgroundColor: 'var(--theme-surface)', 
+          borderBottom: 'var(--border-normal)',
+          padding: '0 24px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid var(--theme-border)'
+          justifyContent: 'space-between'
         }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {isMobile && (
               <Button
                 type="text"
-                icon={<MenuOutlined />}
+                icon={<MenuOutlined style={{ fontSize: '18px', fontWeight: '500' }} />}
                 onClick={toggleMobileMenu}
                 style={{ marginRight: 16 }}
               />
             )}
-            <Title level={3} style={{ margin: 0, fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}>
+            <Title level={3} style={{ 
+              margin: 0, 
+              color: 'var(--theme-text)',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 'var(--font-weight-semibold)'
+            }}>
               {currentTitle}
             </Title>
           </div>
@@ -340,7 +368,7 @@ export default function App() {
             }}
             placement="bottomRight"
             trigger={['hover']}
-            dropdownRender={(menu) => (
+            popupRender={(menu) => (
               <div style={{ 
                 minWidth: '280px',
                 fontSize: '16px',

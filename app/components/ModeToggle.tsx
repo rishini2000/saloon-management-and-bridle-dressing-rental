@@ -39,12 +39,13 @@ export const ModeToggle: React.FC = () => {
       display: 'flex', 
       flexDirection: 'column',
       padding: '12px 16px',
-      fontFamily: '"Figtree", sans-serif',
+      fontFamily: 'var(--font-primary)',
       gap: '12px'
     }}>
       <span style={{ 
         color: 'var(--theme-text)',
-        fontWeight: '500',
+        fontFamily: 'var(--font-primary)',
+        fontWeight: 'var(--font-weight-semibold)',
         fontSize: '15px'
       }}>
         {getModeLabel()}

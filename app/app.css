@@ -1,8 +1,7 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Montagu+Slab:opsz,wght@16..144,100..900&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
 
 @theme {
-  --font-sans: "Montagu Slab", "Figtree", ui-sans-serif, system-ui, sans-serif,
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
@@ -15,20 +14,67 @@
   --theme-border: #e6d7ff;
   --theme-text: #2c2c2c;
   --theme-text-secondary: #666666;
+  
+  /* Typography System */
+  --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "Crimson Text", Georgia, serif;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Border System */
+  --border-light: 0.5px solid var(--theme-border);
+  --border-normal: 1px solid var(--theme-border);
+  --border-medium: 1.5px solid var(--theme-border);
+  --border-prominent: 2px solid var(--theme-primary);
 }
 
 html,
 body {
   background-color: var(--theme-background);
   color: var(--theme-text);
-  font-family: "Montagu Slab", "Figtree", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 400;
-  line-height: 1.6;
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
 }
 
 /* Remove all shadows globally for flat design */
 * {
   box-shadow: none !important;
+}
+
+/* Navigation menu item spacing */
+.ant-menu-item {
+  height: 40px !important;
+  line-height: 40px !important;
+  margin-bottom: 4px !important;
+  padding: 0 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ant-menu-item .ant-menu-item-icon {
+  margin-inline-end: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 20px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.ant-menu-item .anticon {
+  font-size: 20px !important;
+  color: var(--theme-text) !important;
+}
+
+/* Hide text labels when collapsed */
+.ant-layout-sider-collapsed .ant-menu-item .ant-menu-title-content {
+  display: none !important;
 }
 
 /* Custom scrollbar styling */
@@ -50,28 +96,52 @@ body {
   background: var(--theme-primary);
 }
 
-/* Subtle borders for components */
+/* Typography Classes */
+.saloon-heading {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--theme-text);
+  letter-spacing: -0.02em;
+}
+
+.saloon-text {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-normal);
+  color: var(--theme-text);
+}
+
+.saloon-text-bold {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--theme-text);
+}
+
+.saloon-text-secondary {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-normal);
+  color: var(--theme-text-secondary);
+}
+
+/* Component Styling */
 .saloon-card {
-  border: 1px solid var(--theme-border);
+  border: var(--border-normal);
   background: var(--theme-surface);
+  font-family: var(--font-primary);
 }
 
 .saloon-divider {
-  border-color: var(--theme-border);
+  border: var(--border-light);
 }
 
-/* Line weight adjustments */
+/* Border Classes */
 .saloon-border-light {
-  border-width: 0.5px;
-  border-color: var(--theme-border);
+  border: var(--border-light);
 }
 
 .saloon-border-medium {
-  border-width: 1px;
-  border-color: var(--theme-border);
+  border: var(--border-normal);
 }
 
 .saloon-border-prominent {
-  border-width: 2px;
-  border-color: var(--theme-primary);
+  border: var(--border-prominent);
 }

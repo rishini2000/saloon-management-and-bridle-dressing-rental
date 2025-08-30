@@ -10,10 +10,10 @@ export const ThemeSwitcher: React.FC = () => {
   return (
     <div style={{ 
       display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      gap: '12px',
-      padding: '12px 16px'
+      justifyContent: 'center', 
+      gap: '12px', 
+      padding: '12px 16px',
+      fontFamily: 'var(--font-primary)'
     }}>
       {availableColorThemes.map((theme) => (
         <Tooltip key={theme} title={colorThemes[theme].name} placement="top">

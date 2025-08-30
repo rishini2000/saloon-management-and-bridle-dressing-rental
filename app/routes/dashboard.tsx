@@ -1,4 +1,4 @@
-import type { Route } from "./+types/home";
+import type { Route } from "./+types/dashboard";
 import { Card, Row, Col, Statistic, Typography, Divider } from 'antd';
 import { CalendarOutlined, TeamOutlined, DollarOutlined, TrophyOutlined } from '@ant-design/icons';
 
@@ -11,13 +11,15 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function Home() {
+export default function Dashboard() {
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2} style={{ fontFamily: '"Montagu Slab", serif', marginBottom: '8px' }}>
-        Dashboard
-      </Title>
-      <Paragraph style={{ fontFamily: '"Figtree", sans-serif', marginBottom: '32px', color: 'var(--theme-text-secondary)' }}>
+      <Paragraph style={{ 
+        fontFamily: 'var(--font-primary)', 
+        fontWeight: 'var(--font-weight-normal)',
+        marginBottom: '32px', 
+        color: 'var(--theme-text-secondary)' 
+      }}>
         Welcome to your Saloon Management System. Here's an overview of your business.
       </Paragraph>
 
@@ -28,7 +30,11 @@ export default function Home() {
               title="Today's Appointments"
               value={12}
               prefix={<CalendarOutlined style={{ color: 'var(--theme-primary)' }} />}
-              valueStyle={{ fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}
+              valueStyle={{ 
+                fontFamily: 'var(--font-primary)', 
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--theme-text)' 
+              }}
             />
           </Card>
         </Col>
@@ -38,7 +44,11 @@ export default function Home() {
               title="Active Clients"
               value={248}
               prefix={<TeamOutlined style={{ color: 'var(--theme-primary)' }} />}
-              valueStyle={{ fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}
+              valueStyle={{ 
+                fontFamily: 'var(--font-primary)', 
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--theme-text)' 
+              }}
             />
           </Card>
         </Col>
@@ -49,7 +59,11 @@ export default function Home() {
               value={15420}
               prefix={<DollarOutlined style={{ color: 'var(--theme-primary)' }} />}
               precision={2}
-              valueStyle={{ fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}
+              valueStyle={{ 
+                fontFamily: 'var(--font-primary)', 
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--theme-text)' 
+              }}
             />
           </Card>
         </Col>
@@ -59,7 +73,11 @@ export default function Home() {
               title="Services Completed"
               value={89}
               prefix={<TrophyOutlined style={{ color: 'var(--theme-primary)' }} />}
-              valueStyle={{ fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}
+              valueStyle={{ 
+                fontFamily: 'var(--font-primary)', 
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--theme-text)' 
+              }}
             />
           </Card>
         </Col>
@@ -72,12 +90,16 @@ export default function Home() {
           <Card 
             className="saloon-card"
             title={
-              <span style={{ fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}>
+              <span style={{ 
+                fontFamily: 'var(--font-heading)', 
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--theme-text)' 
+              }}>
                 Recent Activity
               </span>
             }
           >
-            <div style={{ fontFamily: '"Figtree", sans-serif' }}>
+            <div style={{ fontFamily: 'var(--font-primary)' }}>
               <p className="saloon-border-light" style={{ padding: '12px', borderRadius: '6px', marginBottom: '12px' }}>
                 <strong>Sarah Johnson</strong> booked a haircut appointment for tomorrow at 2:00 PM
               </p>
@@ -94,12 +116,16 @@ export default function Home() {
           <Card 
             className="saloon-card"
             title={
-              <span style={{ fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}>
+              <span style={{ 
+                fontFamily: 'var(--font-heading)', 
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--theme-text)' 
+              }}>
                 Quick Actions
               </span>
             }
           >
-            <div style={{ fontFamily: '"Figtree", sans-serif' }}>
+            <div style={{ fontFamily: 'var(--font-primary)' }}>
               <div className="saloon-border-prominent" style={{ padding: '16px', borderRadius: '8px', marginBottom: '16px', textAlign: 'center' }}>
                 <strong>New Appointment</strong>
                 <br />
