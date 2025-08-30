@@ -23,6 +23,8 @@ import {
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { ThemeSwitcher } from "./components/ThemeSwitcher";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,7 +35,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Montagu+Slab:opsz,wght@16..144,100..900&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap",
   },
 ];
 
@@ -50,7 +52,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -137,6 +141,14 @@ export default function App() {
       type: 'divider' as const,
     },
     {
+      key: 'theme-switcher',
+      label: <ThemeSwitcher />,
+      disabled: true,
+    },
+    {
+      type: 'divider' as const,
+    },
+    {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: 'Logout',
@@ -160,10 +172,11 @@ export default function App() {
       {!isMobile && (
         <Sider 
           collapsed={true} 
-          theme="dark"
           style={{
             display: 'flex',
             flexDirection: 'column',
+            backgroundColor: 'var(--theme-sider)',
+            borderRight: '1px solid var(--theme-border)',
           }}
         >
           {/* Logo placeholder */}
@@ -172,18 +185,19 @@ export default function App() {
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          borderBottom: '1px solid #303030'
+          borderBottom: '1px solid var(--theme-border)'
         }}>
           <div style={{ 
             width: 32, 
             height: 32, 
-            backgroundColor: '#1890ff', 
+            backgroundColor: 'var(--theme-primary)', 
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            fontFamily: '"Montagu Slab", serif'
           }}>
             S
           </div>
@@ -200,13 +214,13 @@ export default function App() {
         }}>
           <div>
             <Menu
-              theme="dark"
               mode="inline"
               selectedKeys={[location.pathname]}
               onClick={handleMenuClick}
               style={{ 
                 border: 'none',
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
+                color: 'var(--theme-text)'
               }}
               items={menuItems.map(item => ({
                 key: item.key,
@@ -219,12 +233,12 @@ export default function App() {
           {/* Logout button at bottom */}
           <div style={{ paddingBottom: '20px' }}>
             <Menu
-              theme="dark"
               mode="inline"
               onClick={handleMenuClick}
               style={{ 
                 border: 'none',
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
+                color: 'var(--theme-text)'
               }}
               items={[{
                 key: 'logout',
@@ -244,14 +258,15 @@ export default function App() {
             <div style={{ 
               width: 32, 
               height: 32, 
-              backgroundColor: '#1890ff', 
+              backgroundColor: 'var(--theme-primary)', 
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
               fontWeight: 'bold',
-              marginRight: 12
+              marginRight: 12,
+              fontFamily: '"Montagu Slab", serif'
             }}>
               S
             </div>
@@ -296,11 +311,11 @@ export default function App() {
       <AntLayout>
         <Header style={{ 
           padding: '0 24px', 
-          background: '#fff',
+          background: 'var(--theme-surface)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          borderBottom: '1px solid #f0f0f0'
+          borderBottom: '1px solid var(--theme-border)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {isMobile && (
@@ -311,7 +326,7 @@ export default function App() {
                 style={{ marginRight: 16 }}
               />
             )}
-            <Title level={3} style={{ margin: 0 }}>
+            <Title level={3} style={{ margin: 0, fontFamily: '"Montagu Slab", serif', color: 'var(--theme-text)' }}>
               {currentTitle}
             </Title>
           </div>
@@ -332,18 +347,19 @@ export default function App() {
               <Avatar 
                 size="small" 
                 icon={<UserOutlined />} 
-                style={{ marginRight: 8 }}
+                style={{ marginRight: 8, backgroundColor: 'var(--theme-primary)' }}
               />
-              <span>John Doe</span>
+              <span style={{ color: 'var(--theme-text)', fontFamily: '"Figtree", sans-serif' }}>John Doe</span>
             </div>
           </Dropdown>
         </Header>
         
         <Content style={{ 
           margin: '24px',
-          background: '#fff',
+          background: 'var(--theme-surface)',
           borderRadius: '8px',
-          overflow: 'auto'
+          overflow: 'auto',
+          border: '1px solid var(--theme-border)'
         }}>
           <Outlet />
         </Content>

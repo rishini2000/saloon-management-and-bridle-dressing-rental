@@ -1,15 +1,77 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montagu+Slab:opsz,wght@16..144,100..900&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+  --font-sans: "Montagu Slab", "Figtree", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* CSS Custom Properties for theming */
+:root {
+  --theme-primary: #b37feb;
+  --theme-background: #fafafa;
+  --theme-surface: #ffffff;
+  --theme-sider: #f6f0ff;
+  --theme-border: #e6d7ff;
+  --theme-text: #2c2c2c;
+  --theme-text-secondary: #666666;
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  background-color: var(--theme-background);
+  color: var(--theme-text);
+  font-family: "Montagu Slab", "Figtree", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+/* Remove all shadows globally for flat design */
+* {
+  box-shadow: none !important;
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--theme-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary);
+}
+
+/* Subtle borders for components */
+.saloon-card {
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+}
+
+.saloon-divider {
+  border-color: var(--theme-border);
+}
+
+/* Line weight adjustments */
+.saloon-border-light {
+  border-width: 0.5px;
+  border-color: var(--theme-border);
+}
+
+.saloon-border-medium {
+  border-width: 1px;
+  border-color: var(--theme-border);
+}
+
+.saloon-border-prominent {
+  border-width: 2px;
+  border-color: var(--theme-primary);
 }
