@@ -1,0 +1,62 @@
+import React, { useState } from 'react';
+import { Button, Space } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
+
+export interface ActionButton {
+  key: string;
+  label: string;
+  icon?: React.ReactNode;
+  type?: 'primary' | 'default' | 'dashed' | 'link' | 'text';
+  danger?: boolean;
+  onClick: () => void;
+  visible?: boolean;
+  disabled?: boolean;
+}
+
+interface ActionPanelProps {
+  actions: ActionButton[];
+  className?: string;
+}
+
+export const ActionPanel: React.FC<ActionPanelProps> = ({ actions, className }) => {
+  const [visibleActions, setVisibleActions] = useState<Record<string, boolean>>({});
+
+  const getVisibleActions = () => {
+    return actions.filter(action => {
+      const isVisible = action.visible !== false && (visibleActions[action.key] !== false);
+      return isVisible;
+    });
+  };
+
+  const handleActionClick = (action: ActionButton) => {
+    action.onClick();
+  };
+
+  return (
+    <div className={className} style={{ 
+      display: 'flex', 
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      gap: '8px'
+    }}>
+      <Space size="small">
+        {getVisibleActions().map((action) => (
+          <Button
+            key={action.key}
+            type={action.type || 'default'}
+            icon={action.icon}
+            danger={action.danger}
+            disabled={action.disabled}
+            onClick={() => handleActionClick(action)}
+            style={{
+              fontFamily: 'var(--font-primary)',
+              fontWeight: 'var(--font-weight-medium)'
+            }}
+          >
+            {action.label}
+          </Button>
+        ))}
+      </Space>
+    </div>
+  );
+};
