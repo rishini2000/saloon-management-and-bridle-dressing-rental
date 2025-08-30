@@ -138,12 +138,12 @@ export default function App() {
     {
       key: 'mode-toggle',
       label: <ModeToggle />,
-      style: { padding: 0 }
+      style: { padding: 0, backgroundColor: 'transparent !important' }
     },
     {
       key: 'theme-switcher',
       label: <ThemeSwitcher />,
-      style: { padding: 0 }
+      style: { padding: 0, backgroundColor: 'transparent !important' }
     },
     {
       type: 'divider' as const
@@ -230,7 +230,7 @@ export default function App() {
           justifyContent: 'space-between',
           alignItems: 'center',
           minHeight: 'calc(100vh - 64px)', // Account for logo area height
-          paddingTop: '32px'
+          paddingTop: '48px'
         }}>
           <div>
             <Menu
@@ -414,7 +414,7 @@ export default function App() {
                 fontSize: '15px',
                 whiteSpace: 'nowrap'
               }}>
-                User
+                John Doe
               </span>
             </div>
           </Dropdown>

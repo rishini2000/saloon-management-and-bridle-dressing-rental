@@ -11,10 +11,10 @@ export const ThemeSwitcher: React.FC = () => {
     <div style={{ 
       display: 'flex', 
       justifyContent: 'center', 
-      gap: '12px', 
+      gap: '16px', 
       padding: '12px 16px',
       fontFamily: 'var(--font-primary)'
-    }}>
+    }} className="theme-color-picker">
       {availableColorThemes.map((theme) => (
         <Tooltip key={theme} title={colorThemes[theme].name} placement="top">
           <div
@@ -25,10 +25,12 @@ export const ThemeSwitcher: React.FC = () => {
               borderRadius: '50%',
               backgroundColor: colorThemes[theme].dotColor,
               cursor: 'pointer',
-              border: theme === currentColorTheme ? '3px solid var(--theme-text)' : '2px solid transparent',
+              border: theme === currentColorTheme ? '4px solid var(--theme-text)' : '2px solid transparent',
               boxSizing: 'border-box',
               transition: 'all 0.2s ease',
-              transform: theme === currentColorTheme ? 'scale(1.1)' : 'scale(1)',
+              transform: theme === currentColorTheme ? 'scale(1.15)' : 'scale(1)',
+              outline: theme === currentColorTheme ? '2px solid var(--theme-primary)' : 'none',
+              outlineOffset: '2px',
             }}
           />
         </Tooltip>

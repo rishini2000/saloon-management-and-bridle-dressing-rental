@@ -41,6 +41,32 @@ body {
   letter-spacing: -0.01em;
 }
 
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+/* Theme menu item hover override */
+.ant-dropdown-menu-item:has(.theme-mode-selector),
+.ant-dropdown-menu-item:has(.theme-color-picker) {
+  background-color: transparent !important;
+}
+
+.ant-dropdown-menu-item:has(.theme-mode-selector):hover,
+.ant-dropdown-menu-item:has(.theme-color-picker):hover {
+  background-color: transparent !important;
+}
+
+/* Enhanced theme selector styling */
+.theme-mode-selector .ant-segmented-item-selected {
+  background-color: color-mix(in srgb, var(--theme-primary) 15%, var(--theme-surface)) !important;
+  color: var(--theme-primary) !important;
+}
+
+.theme-mode-selector .ant-segmented-thumb {
+  background-color: color-mix(in srgb, var(--theme-primary) 15%, var(--theme-surface)) !important;
+}
+
 /* Remove all shadows globally for flat design */
 * {
   box-shadow: none !important;

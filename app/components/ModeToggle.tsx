@@ -58,6 +58,7 @@ export const ModeToggle: React.FC = () => {
           backgroundColor: 'var(--theme-surface)',
           border: '1px solid var(--theme-border)'
         }}
+        className="theme-mode-selector"
       />
     </div>
   );
