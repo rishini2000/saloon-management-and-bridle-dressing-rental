@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
@@ -16,8 +16,8 @@
   --theme-text-secondary: #666666;
   
   /* Typography System */
-  --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: "Crimson Text", Georgia, serif;
+  --font-primary: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-weight-light: 300;
   --font-weight-normal: 400;
   --font-weight-medium: 500;

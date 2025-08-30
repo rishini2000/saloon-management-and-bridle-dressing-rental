@@ -37,7 +37,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap",
   },
 ];
 
@@ -152,7 +152,7 @@ export default function App() {
       key: 'profile',
       icon: <ProfileOutlined style={{ fontSize: '18px', fontWeight: '500' }} />,
       label: <span style={{ 
-        fontSize: '15px', 
+        fontSize: '16px', 
         fontFamily: 'var(--font-primary)',
         fontWeight: 'var(--font-weight-medium)',
         padding: '4px 0' 
@@ -163,7 +163,7 @@ export default function App() {
       key: 'settings',
       icon: <SettingOutlined style={{ fontSize: '18px', fontWeight: '500' }} />,
       label: <span style={{ 
-        fontSize: '15px', 
+        fontSize: '16px', 
         fontFamily: 'var(--font-primary)',
         fontWeight: 'var(--font-weight-medium)',
         padding: '4px 0' 
@@ -243,7 +243,7 @@ export default function App() {
                 color: 'var(--theme-text)',
                 fontFamily: 'var(--font-primary)',
                 fontWeight: 'var(--font-weight-medium)',
-                fontSize: '15px'
+                fontSize: '16px'
               }}
               items={menuItems.map(item => ({
                 ...item,
@@ -375,7 +375,8 @@ export default function App() {
                 border: '1px solid var(--theme-border)',
                 borderRadius: '8px',
                 backgroundColor: 'var(--theme-surface)',
-                boxShadow: 'none'
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                padding: '4px'
               }}>
                 {menu}
               </div>
@@ -385,16 +386,36 @@ export default function App() {
               display: 'flex', 
               alignItems: 'center', 
               cursor: 'pointer',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              transition: 'background-color 0.3s'
+              backgroundColor: 'var(--theme-surface)',
+              border: '1px solid var(--theme-border)',
+              borderRadius: '28px',
+              padding: '4px 20px 4px 8px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+              height: '48px',
+              minWidth: '120px',
+              gap: '12px'
             }}>
               <Avatar 
-                size="small" 
-                icon={<UserOutlined />} 
-                style={{ marginRight: 8, backgroundColor: 'var(--theme-primary)' }}
-              />
-              <span style={{ color: 'var(--theme-text)', fontFamily: '"Figtree", sans-serif' }}>John Doe</span>
+                size={32} 
+                style={{ 
+                  backgroundColor: 'var(--theme-primary)', 
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  fontSize: '15px'
+                }}
+              >
+                U
+              </Avatar>
+              <span style={{ 
+                color: 'var(--theme-text)', 
+                fontWeight: '600',
+                fontFamily: 'var(--font-primary)',
+                fontSize: '15px',
+                whiteSpace: 'nowrap'
+              }}>
+                User
+              </span>
             </div>
           </Dropdown>
         </Header>

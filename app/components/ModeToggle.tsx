@@ -46,7 +46,7 @@ export const ModeToggle: React.FC = () => {
         color: 'var(--theme-text)',
         fontFamily: 'var(--font-primary)',
         fontWeight: 'var(--font-weight-semibold)',
-        fontSize: '15px'
+        fontSize: '16px'
       }}>
         {getModeLabel()}
       </span>
