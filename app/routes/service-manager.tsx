@@ -2,7 +2,7 @@ import { Typography } from "antd";
 
 const { Title } = Typography;
 
-export default function Inventory() {
+export default function ServiceManager() {
   return (
     <div style={{ padding: '24px' }}>
       <Title level={2} style={{ 
@@ -10,13 +10,13 @@ export default function Inventory() {
         fontWeight: 'var(--font-weight-semibold)',
         color: 'var(--theme-text)'
       }}>
-        Inventory Management
+        Service Manager
       </Title>
       <p style={{ 
         fontFamily: 'var(--font-primary)', 
         color: 'var(--theme-text-secondary)' 
       }}>
-        Manage your salon inventory, products, and supplies.
+        Create services, assign to employees, manage products and rentals.
       </p>
     </div>
   );

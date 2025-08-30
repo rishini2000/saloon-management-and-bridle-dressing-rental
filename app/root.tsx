@@ -87,9 +87,9 @@ export default function App() {
     },
     {
       key: '/crm',
-      icon: <FileTextOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
-      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>CRM</span>,
-      title: "CRM"
+      icon: <UserOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Customer Relationship Manager</span>,
+      title: "Customer Relationship Manager"
     },
     {
       key: '/employee-manager',
@@ -98,10 +98,10 @@ export default function App() {
       title: "Employee Manager"
     },
     {
-      key: '/inventory',
+      key: '/service-manager',
       icon: <ToolOutlined style={{ fontSize: '20px', fontWeight: '500' }} />,
-      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Inventory</span>,
-      title: "Inventory"
+      label: <span style={{ fontFamily: 'var(--font-primary)', fontWeight: 'var(--font-weight-medium)' }}>Service Manager</span>,
+      title: "Service Manager"
     },
     {
       key: '/reports',
@@ -317,20 +317,6 @@ export default function App() {
               label: item.label
             }))}
           />
-          
-          {/* Logout button at bottom of mobile drawer */}
-          <div style={{ borderTop: '1px solid #f0f0f0', padding: '8px 0' }}>
-            <Menu
-              mode="inline"
-              onClick={handleMenuClick}
-              style={{ border: 'none' }}
-              items={[{
-                key: 'logout',
-                icon: <LogoutOutlined />,
-                label: 'Logout'
-              }]}
-            />
-          </div>
         </div>
       </Drawer>
       

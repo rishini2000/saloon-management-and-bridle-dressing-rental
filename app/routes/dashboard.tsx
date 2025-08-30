@@ -14,6 +14,14 @@ export function meta({}: Route.MetaArgs) {
 export default function Dashboard() {
   return (
     <div style={{ padding: '24px' }}>
+      <Title level={1} style={{ 
+        fontFamily: 'var(--font-heading)', 
+        fontWeight: 'var(--font-weight-bold)',
+        color: 'var(--theme-text)',
+        marginBottom: '16px'
+      }}>
+        Dashboard
+      </Title>
       <Paragraph style={{ 
         fontFamily: 'var(--font-primary)', 
         fontWeight: 'var(--font-weight-normal)',
