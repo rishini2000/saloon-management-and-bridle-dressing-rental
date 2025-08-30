@@ -1,4 +1,10 @@
-// - CRM
-//     - Filter Customers
-//     - assign labels to customers 
-//     - send promo codes
+import { Result } from 'antd';
+
+export default function CRM() {
+  return (
+    <Result
+      title="CRM"
+      subTitle="Manage customers, filter and assign labels, send promo codes"
+    />
+  );
+}

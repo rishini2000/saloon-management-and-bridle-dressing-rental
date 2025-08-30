@@ -1,6 +1,10 @@
-// - Services Manager 
-// - service creation
-//     - Assign services to employee
-//     - assign products to services
-// - rental product management
-// - laundy management
+import { Result } from 'antd';
+
+export default function ServiceManager() {
+  return (
+    <Result
+      title="Service Manager"
+      subTitle="Create services, assign to employees, manage products and rentals"
+    />
+  );
+}

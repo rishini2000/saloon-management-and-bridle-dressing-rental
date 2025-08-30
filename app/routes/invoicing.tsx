@@ -1,8 +1,10 @@
+import { Result } from 'antd';
 
-// - Invoicing 
-//     - Search invoices
-//     - view/modify invoices (until completion)
-//     - view invoice summary
-//     - printout 
-//     - finalize invoice
-//         - coupon
+export default function Invoicing() {
+  return (
+    <Result
+      title="Invoicing"
+      subTitle="Search, view, modify invoices and manage billing"
+    />
+  );
+}
