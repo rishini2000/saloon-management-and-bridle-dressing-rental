@@ -25,6 +25,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ThemeSwitcher } from "./components/ThemeSwitcher";
+import { ModeToggle } from "./components/ModeToggle";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -128,30 +129,32 @@ export default function App() {
   // User profile dropdown menu
   const userMenuItems = [
     {
-      key: 'profile',
-      icon: <ProfileOutlined />,
-      label: 'Profile',
-    },
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: 'Settings',
-    },
-    {
-      type: 'divider' as const,
+      key: 'mode-toggle',
+      label: <ModeToggle />,
+      disabled: true,
+      style: { padding: 0, margin: 0 }
     },
     {
       key: 'theme-switcher',
       label: <ThemeSwitcher />,
       disabled: true,
+      style: { padding: 0, margin: 0 }
     },
     {
       type: 'divider' as const,
+      style: { margin: 0, borderColor: 'var(--theme-border)' }
     },
     {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: 'Logout',
+      key: 'profile',
+      icon: <ProfileOutlined style={{ fontSize: '18px' }} />,
+      label: <span style={{ fontSize: '16px', padding: '4px 0' }}>Profile</span>,
+      style: { padding: '12px 16px' }
+    },
+    {
+      key: 'settings',
+      icon: <SettingOutlined style={{ fontSize: '18px' }} />,
+      label: <span style={{ fontSize: '16px', padding: '4px 0' }}>Settings</span>,
+      style: { padding: '12px 16px' }
     },
   ];
 
@@ -332,9 +335,23 @@ export default function App() {
           </div>
           
           <Dropdown
-            menu={{ items: userMenuItems }}
+            menu={{ 
+              items: userMenuItems
+            }}
             placement="bottomRight"
             trigger={['hover']}
+            dropdownRender={(menu) => (
+              <div style={{ 
+                minWidth: '280px',
+                fontSize: '16px',
+                border: '1px solid var(--theme-border)',
+                borderRadius: '8px',
+                backgroundColor: 'var(--theme-surface)',
+                boxShadow: 'none'
+              }}>
+                {menu}
+              </div>
+            )}
           >
             <div style={{ 
               display: 'flex', 

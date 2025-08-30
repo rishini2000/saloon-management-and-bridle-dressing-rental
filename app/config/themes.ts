@@ -1,10 +1,16 @@
 import { theme } from 'antd';
 
-export type ThemeType = 'dark' | 'lavender' | 'mint' | 'peach' | 'sky' | 'rose';
+export type ColorTheme = 'lavender' | 'mint' | 'peach' | 'sky' | 'rose';
+export type ThemeMode = 'light' | 'dark' | 'auto';
+
+export interface ColorThemeConfig {
+  name: string;
+  primaryColor: string;
+  dotColor: string;
+}
 
 export interface ThemeConfig {
   name: string;
-  type: 'light' | 'dark';
   primaryColor: string;
   backgroundColor: string;
   surfaceColor: string;
@@ -15,86 +21,118 @@ export interface ThemeConfig {
   dotColor: string;
 }
 
-export const themeConfigs: Record<ThemeType, ThemeConfig> = {
-  dark: {
-    name: 'Dark',
-    type: 'dark',
-    primaryColor: '#722ed1',
-    backgroundColor: '#0f0f0f',
-    surfaceColor: '#1a1a1a',
-    siderColor: '#262626',
-    borderColor: '#434343',
-    textColor: '#ffffff',
-    secondaryTextColor: '#a0a0a0',
-    dotColor: '#722ed1'
-  },
+export const colorThemes: Record<ColorTheme, ColorThemeConfig> = {
   lavender: {
     name: 'Lavender Dreams',
-    type: 'light',
     primaryColor: '#b37feb',
-    backgroundColor: '#fafafa',
-    surfaceColor: '#ffffff',
-    siderColor: '#f6f0ff',
-    borderColor: '#e6d7ff',
-    textColor: '#2c2c2c',
-    secondaryTextColor: '#666666',
     dotColor: '#b37feb'
   },
   mint: {
     name: 'Mint Fresh',
-    type: 'light',
     primaryColor: '#52c41a',
-    backgroundColor: '#fafafa',
-    surfaceColor: '#ffffff',
-    siderColor: '#f0fff4',
-    borderColor: '#d9f7be',
-    textColor: '#2c2c2c',
-    secondaryTextColor: '#666666',
     dotColor: '#52c41a'
   },
   peach: {
     name: 'Peach Blossom',
-    type: 'light',
     primaryColor: '#ff9c6e',
-    backgroundColor: '#fafafa',
-    surfaceColor: '#ffffff',
-    siderColor: '#fff7f0',
-    borderColor: '#ffd8bf',
-    textColor: '#2c2c2c',
-    secondaryTextColor: '#666666',
     dotColor: '#ff9c6e'
   },
   sky: {
     name: 'Sky Blue',
-    type: 'light',
     primaryColor: '#40a9ff',
-    backgroundColor: '#fafafa',
-    surfaceColor: '#ffffff',
-    siderColor: '#f0f9ff',
-    borderColor: '#bae7ff',
-    textColor: '#2c2c2c',
-    secondaryTextColor: '#666666',
     dotColor: '#40a9ff'
   },
   rose: {
     name: 'Rose Garden',
-    type: 'light',
     primaryColor: '#eb2f96',
-    backgroundColor: '#fafafa',
-    surfaceColor: '#ffffff',
-    siderColor: '#fff0f6',
-    borderColor: '#ffadd2',
-    textColor: '#2c2c2c',
-    secondaryTextColor: '#666666',
     dotColor: '#eb2f96'
   }
 };
 
-export const getAntdTheme = (themeType: ThemeType) => {
-  const config = themeConfigs[themeType];
+const lightThemeBase = {
+  backgroundColor: '#fafafa',
+  surfaceColor: '#ffffff',
+  textColor: '#2c2c2c',
+  secondaryTextColor: '#666666',
+};
+
+const darkThemeBase = {
+  backgroundColor: '#0f0f0f',
+  surfaceColor: '#1a1a1a',
+  textColor: '#ffffff',
+  secondaryTextColor: '#a0a0a0',
+};
+
+const getSiderColor = (primaryColor: string, isDark: boolean): string => {
+  if (isDark) {
+    // Dark variants with subtle tint
+    const colorMap: Record<string, string> = {
+      '#b37feb': '#2a1a3a', // lavender dark
+      '#52c41a': '#1a2e1a', // mint dark
+      '#ff9c6e': '#3a2a1a', // peach dark
+      '#40a9ff': '#1a2a3a', // sky dark
+      '#eb2f96': '#3a1a2a', // rose dark
+    };
+    return colorMap[primaryColor] || '#262626';
+  } else {
+    // Light variants
+    const colorMap: Record<string, string> = {
+      '#b37feb': '#f6f0ff', // lavender light
+      '#52c41a': '#f0fff4', // mint light
+      '#ff9c6e': '#fff7f0', // peach light
+      '#40a9ff': '#f0f9ff', // sky light
+      '#eb2f96': '#fff0f6', // rose light
+    };
+    return colorMap[primaryColor] || '#f5f5f5';
+  }
+};
+
+const getBorderColor = (primaryColor: string, isDark: boolean): string => {
+  if (isDark) {
+    // Dark borders with subtle tint
+    const colorMap: Record<string, string> = {
+      '#b37feb': '#4a3a5a', // lavender dark border
+      '#52c41a': '#3a4e3a', // mint dark border
+      '#ff9c6e': '#5a4a3a', // peach dark border
+      '#40a9ff': '#3a4a5a', // sky dark border
+      '#eb2f96': '#5a3a4a', // rose dark border
+    };
+    return colorMap[primaryColor] || '#434343';
+  } else {
+    // Light borders
+    const colorMap: Record<string, string> = {
+      '#b37feb': '#e6d7ff', // lavender light border
+      '#52c41a': '#d9f7be', // mint light border
+      '#ff9c6e': '#ffd8bf', // peach light border
+      '#40a9ff': '#bae7ff', // sky light border
+      '#eb2f96': '#ffadd2', // rose light border
+    };
+    return colorMap[primaryColor] || '#e8e8e8';
+  }
+};
+
+export const getThemeConfig = (colorTheme: ColorTheme, mode: ThemeMode): ThemeConfig => {
+  const colorConfig = colorThemes[colorTheme];
+  const baseConfig = mode === 'dark' ? darkThemeBase : lightThemeBase;
   
   return {
-    algorithm: config.type === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
+    name: `${colorConfig.name} (${mode === 'dark' ? 'Dark' : 'Light'})`,
+    primaryColor: colorConfig.primaryColor,
+    backgroundColor: baseConfig.backgroundColor,
+    surfaceColor: baseConfig.surfaceColor,
+    siderColor: getSiderColor(colorConfig.primaryColor, mode === 'dark'),
+    borderColor: getBorderColor(colorConfig.primaryColor, mode === 'dark'),
+    textColor: baseConfig.textColor,
+    secondaryTextColor: baseConfig.secondaryTextColor,
+    dotColor: colorConfig.dotColor,
+  };
+};
+
+export const getAntdTheme = (colorTheme: ColorTheme, mode: ThemeMode) => {
+  const config = getThemeConfig(colorTheme, mode);
+  
+  return {
+    algorithm: mode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
     token: {
       colorPrimary: config.primaryColor,
       colorBgContainer: config.surfaceColor,
@@ -121,7 +159,7 @@ export const getAntdTheme = (themeType: ThemeType) => {
         itemSelectedBg: config.primaryColor + '20',
         itemHoverBg: config.primaryColor + '10',
         itemSelectedColor: config.primaryColor,
-        itemColor: config.type === 'dark' ? '#ffffff' : config.textColor,
+        itemColor: mode === 'dark' ? '#ffffff' : config.textColor,
         iconSize: 18,
       },
       Button: {

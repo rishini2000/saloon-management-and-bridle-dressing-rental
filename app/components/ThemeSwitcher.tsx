@@ -1,34 +1,34 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { useTheme } from '../contexts/ThemeContext';
-import type { ThemeType } from '../config/themes';
-import { themeConfigs } from '../config/themes';
+import type { ColorTheme } from '../config/themes';
+import { colorThemes } from '../config/themes';
 
 export const ThemeSwitcher: React.FC = () => {
-  const { currentTheme, setTheme, availableThemes } = useTheme();
+  const { currentColorTheme, setColorTheme, availableColorThemes } = useTheme();
 
   return (
     <div style={{ 
       display: 'flex', 
       alignItems: 'center', 
-      gap: '8px',
-      padding: '8px 12px',
-      borderTop: '1px solid var(--theme-border)'
+      justifyContent: 'center',
+      gap: '12px',
+      padding: '12px 16px'
     }}>
-      {availableThemes.map((theme) => (
-        <Tooltip key={theme} title={themeConfigs[theme].name} placement="top">
+      {availableColorThemes.map((theme) => (
+        <Tooltip key={theme} title={colorThemes[theme].name} placement="top">
           <div
-            onClick={() => setTheme(theme)}
+            onClick={() => setColorTheme(theme)}
             style={{
-              width: 20,
-              height: 20,
+              width: 28,
+              height: 28,
               borderRadius: '50%',
-              backgroundColor: themeConfigs[theme].dotColor,
+              backgroundColor: colorThemes[theme].dotColor,
               cursor: 'pointer',
-              border: theme === currentTheme ? '3px solid var(--theme-text)' : '2px solid transparent',
+              border: theme === currentColorTheme ? '3px solid var(--theme-text)' : '2px solid transparent',
               boxSizing: 'border-box',
               transition: 'all 0.2s ease',
-              transform: theme === currentTheme ? 'scale(1.1)' : 'scale(1)',
+              transform: theme === currentColorTheme ? 'scale(1.1)' : 'scale(1)',
             }}
           />
         </Tooltip>
