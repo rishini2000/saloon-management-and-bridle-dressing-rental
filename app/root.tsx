@@ -9,7 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { Layout as AntLayout, Menu, Avatar, Dropdown, Typography } from "antd";
+import { Layout as AntLayout, Menu, Avatar, Dropdown, Typography, Button, Drawer } from "antd";
 import {
   CalendarOutlined,
   FileTextOutlined,
@@ -19,6 +19,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   ProfileOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -61,8 +62,10 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentTitle, setCurrentTitle] = useState("Dashboard");
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
 
-  // Menu items configuration
+  // Menu items configuration (without logout)
   const menuItems = [
     {
       key: "/appointments",
@@ -106,6 +109,18 @@ export default function App() {
     }
   }, [location.pathname]);
 
+  // Handle mobile breakpoint detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // User profile dropdown menu
   const userMenuItems = [
     {
@@ -130,19 +145,28 @@ export default function App() {
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
+    if (isMobile) {
+      setMobileMenuVisible(false);
+    }
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuVisible(!mobileMenuVisible);
   };
 
   return (
     <AntLayout style={{ minHeight: '100vh' }}>
-      <Sider 
-        collapsed={true} 
-        theme="dark"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {/* Logo placeholder */}
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <Sider 
+          collapsed={true} 
+          theme="dark"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Logo placeholder */}
         <div style={{ 
           height: 64, 
           display: 'flex', 
@@ -165,30 +189,109 @@ export default function App() {
           </div>
         </div>
         
-        {/* Navigation Menu - Centered */}
+        {/* Navigation Menu - Vertically centered on screen */}
         <div style={{ 
           flex: 1, 
           display: 'flex', 
+          flexDirection: 'column',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          justifyContent: 'center'
+          minHeight: 'calc(100vh - 64px)' // Account for logo area height
         }}>
+          <div>
+            <Menu
+              theme="dark"
+              mode="inline"
+              selectedKeys={[location.pathname]}
+              onClick={handleMenuClick}
+              style={{ 
+                border: 'none',
+                backgroundColor: 'transparent'
+              }}
+              items={menuItems.map(item => ({
+                key: item.key,
+                icon: item.icon,
+                label: item.label
+              }))}
+            />
+          </div>
+          
+          {/* Logout button at bottom */}
+          <div style={{ paddingBottom: '20px' }}>
+            <Menu
+              theme="dark"
+              mode="inline"
+              onClick={handleMenuClick}
+              style={{ 
+                border: 'none',
+                backgroundColor: 'transparent'
+              }}
+              items={[{
+                key: 'logout',
+                icon: <LogoutOutlined />,
+                label: 'Logout'
+              }]}
+            />
+          </div>
+        </div>
+        </Sider>
+      )}
+      
+      {/* Mobile Drawer Menu */}
+      <Drawer
+        title={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ 
+              width: 32, 
+              height: 32, 
+              backgroundColor: '#1890ff', 
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              marginRight: 12
+            }}>
+              S
+            </div>
+            <span>Saloon System</span>
+          </div>
+        }
+        placement="left"
+        onClose={() => setMobileMenuVisible(false)}
+        open={mobileMenuVisible}
+        width={280}
+        styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column', height: '100%' } }}
+      >
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <Menu
-            theme="dark"
             mode="inline"
             selectedKeys={[location.pathname]}
             onClick={handleMenuClick}
-            style={{ 
-              border: 'none',
-              backgroundColor: 'transparent'
-            }}
+            style={{ border: 'none', flex: 1 }}
             items={menuItems.map(item => ({
               key: item.key,
               icon: item.icon,
               label: item.label
             }))}
           />
+          
+          {/* Logout button at bottom of mobile drawer */}
+          <div style={{ borderTop: '1px solid #f0f0f0', padding: '8px 0' }}>
+            <Menu
+              mode="inline"
+              onClick={handleMenuClick}
+              style={{ border: 'none' }}
+              items={[{
+                key: 'logout',
+                icon: <LogoutOutlined />,
+                label: 'Logout'
+              }]}
+            />
+          </div>
         </div>
-      </Sider>
+      </Drawer>
       
       <AntLayout>
         <Header style={{ 
@@ -199,9 +302,19 @@ export default function App() {
           justifyContent: 'space-between',
           borderBottom: '1px solid #f0f0f0'
         }}>
-          <Title level={3} style={{ margin: 0 }}>
-            {currentTitle}
-          </Title>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {isMobile && (
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                onClick={toggleMobileMenu}
+                style={{ marginRight: 16 }}
+              />
+            )}
+            <Title level={3} style={{ margin: 0 }}>
+              {currentTitle}
+            </Title>
+          </div>
           
           <Dropdown
             menu={{ items: userMenuItems }}
