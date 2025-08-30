@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusOutlined, DollarOutlined, FileTextOutlined } from '@ant-design/icons';
+import { PlusOutlined, CalendarOutlined, UserOutlined, ExportOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import type { FilterConfig } from '../components/FilterComponent';
@@ -75,22 +75,16 @@ export default function Invoicing() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: 'New Invoice',
+      label: '+ New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
     },
     {
-      key: 'payment',
-      label: 'Record Payment',
-      icon: <DollarOutlined />,
-      disabled: selectedInvoices.length === 0,
-      onClick: () => console.log('Record payment for:', selectedInvoices)
-    },
-    {
       key: 'export',
       label: 'Export',
-      icon: <FileTextOutlined />,
+      icon: <ExportOutlined />,
+      iconOnly: true,
       onClick: () => console.log('Export invoices')
     }
   ];
@@ -116,11 +110,11 @@ export default function Invoicing() {
         drawerWidth={400}
       >
         <DataTable
-          data={invoiceData}
           columns={columns}
+          data={invoiceData}
           onSelectionChange={handleSelectionChange}
           onRowClick={handleRowClick}
-          height={500}
+          height="100%"
         />
       </AbstractPageView>
     </div>

@@ -84,10 +84,17 @@ export default function EmployeeManager() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: 'New Employee',
+      label: '+ New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
+    },
+    {
+      key: 'export',
+      label: 'Export',
+      icon: <UserOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Export employees')
     },
     {
       key: 'schedule',
@@ -119,11 +126,11 @@ export default function EmployeeManager() {
         drawerWidth={400}
       >
         <DataTable
-          data={employeeData}
           columns={columns}
+          data={employeeData}
           onSelectionChange={handleSelectionChange}
           onRowClick={handleRowClick}
-          height={500}
+          height="100%"
         />
       </AbstractPageView>
     </div>

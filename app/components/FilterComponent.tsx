@@ -152,16 +152,15 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
   );
 
   return (
-    <div className={className} style={{ 
+    <div style={{ 
       display: 'flex', 
       alignItems: 'center', 
-      gap: '12px',
-      padding: '16px',
+      gap: '8px',
+      padding: '8px 12px',
       backgroundColor: 'var(--theme-surface)',
-      borderRadius: '8px',
-      border: '1px solid var(--theme-border)'
+      borderRadius: '6px'
     }}>
-      <Space size="middle" wrap>
+      <Space size="small" wrap>
         {/* Text Search */}
         {config.textSearch?.enabled && (
           <Input
@@ -169,7 +168,8 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
             prefix={<SearchOutlined />}
             value={filters.textSearch || ''}
             onChange={(e) => handleTextSearchChange(e.target.value)}
-            style={{ width: 200 }}
+            style={{ width: 180 }}
+            size="small"
             allowClear
           />
         )}
@@ -178,7 +178,7 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
         {config.dateRange?.enabled && (
           <Space.Compact>
             <Dropdown overlay={dateRangeMenu} trigger={['click']}>
-              <Button icon={<CalendarOutlined />}>
+              <Button icon={<CalendarOutlined />} size="small">
                 {datePreset ? DATE_PRESETS.find(p => p.value === datePreset)?.label : 'Date Range'}
               </Button>
             </Dropdown>
@@ -186,7 +186,8 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
               <RangePicker
                 value={filters.dateRange}
                 onChange={handleDateRangeChange}
-                style={{ marginLeft: 8 }}
+                format="MM/DD/YYYY"
+                size="small"
               />
             )}
           </Space.Compact>
@@ -197,8 +198,8 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
           <Select
             key={selectConfig.key}
             placeholder={selectConfig.placeholder}
-            style={{ minWidth: 150 }}
-            showSearch
+            style={{ minWidth: 130 }}
+            size="small"
             allowClear
             mode={selectConfig.multiple ? 'multiple' : undefined}
             value={filters.searchSelect?.[selectConfig.key]}
@@ -212,16 +213,25 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
           />
         ))}
 
-        {/* Reset Filters Button */}
+        {/* Filter Action Buttons */}
         {hasChanges && (
-          <Button
-            icon={<ClearOutlined />}
-            onClick={resetFilters}
-            type="text"
-            style={{ color: 'var(--theme-text-secondary)' }}
-          >
-            Reset Filters
-          </Button>
+          <>
+            <Button
+              icon={<ClearOutlined />}
+              onClick={resetFilters}
+              type="text"
+              size="small"
+              title="Reset Filters"
+              style={{ color: 'var(--theme-text-secondary)' }}
+            />
+            <Button
+              icon={<FilterOutlined />}
+              onClick={() => onFiltersChange(filters)}
+              type="primary"
+              size="small"
+              title="Apply Filters"
+            />
+          </>
         )}
       </Space>
     </div>

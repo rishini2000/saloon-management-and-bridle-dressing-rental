@@ -102,16 +102,17 @@ export default function AppointmentManager() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: 'New Appointment',
+      label: '+ New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
     },
     {
-      key: 'calendar',
-      label: 'Calendar View',
+      key: 'archive',
+      label: 'Archive',
       icon: <CalendarOutlined />,
-      onClick: () => console.log('Calendar view')
+      iconOnly: true,
+      onClick: () => console.log('Archive appointments')
     }
   ];
 

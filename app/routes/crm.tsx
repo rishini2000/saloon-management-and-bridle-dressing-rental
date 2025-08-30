@@ -74,10 +74,17 @@ export default function CRM() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: 'New Customer',
+      label: '+ New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
+    },
+    {
+      key: 'export',
+      label: 'Export',
+      icon: <UserOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Export customers')
     },
     {
       key: 'contact',
@@ -109,11 +116,11 @@ export default function CRM() {
         drawerWidth={400}
       >
         <DataTable
-          data={customerData}
           columns={columns}
+          data={customerData}
           onSelectionChange={handleSelectionChange}
           onRowClick={handleRowClick}
-          height={500}
+          height="100%"
         />
       </AbstractPageView>
     </div>

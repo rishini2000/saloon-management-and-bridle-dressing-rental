@@ -11,6 +11,7 @@ export interface ActionButton {
   onClick: () => void;
   visible?: boolean;
   disabled?: boolean;
+  iconOnly?: boolean;
 }
 
 interface ActionPanelProps {
@@ -48,12 +49,13 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ actions, className }) 
             danger={action.danger}
             disabled={action.disabled}
             onClick={() => handleActionClick(action)}
+            title={action.iconOnly ? action.label : undefined}
             style={{
               fontFamily: 'var(--font-primary)',
               fontWeight: 'var(--font-weight-medium)'
             }}
           >
-            {action.label}
+            {!action.iconOnly && action.label}
           </Button>
         ))}
       </Space>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusOutlined, EditOutlined, TagOutlined } from '@ant-design/icons';
+import { PlusOutlined, CalendarOutlined, UserOutlined, EditOutlined, TagOutlined, ExportOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import type { FilterConfig } from '../components/FilterComponent';
@@ -88,10 +88,17 @@ export default function ServiceManager() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: 'New Service',
+      label: '+ New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
+    },
+    {
+      key: 'export',
+      label: 'Export',
+      icon: <ExportOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Export services')
     },
     {
       key: 'edit',
@@ -130,11 +137,11 @@ export default function ServiceManager() {
         drawerWidth={400}
       >
         <DataTable
-          data={serviceData}
           columns={columns}
+          data={serviceData}
           onSelectionChange={handleSelectionChange}
           onRowClick={handleRowClick}
-          height={500}
+          height="100%"
         />
       </AbstractPageView>
     </div>

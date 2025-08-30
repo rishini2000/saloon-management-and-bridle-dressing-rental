@@ -12,11 +12,11 @@ export interface DataTableColumn {
 }
 
 export interface DataTableProps {
-  data: any[];
   columns: DataTableColumn[];
+  data: any[];
   onSelectionChange?: (selectedIds: string[]) => void;
   onRowClick?: (rowData: any) => void;
-  height?: number;
+  height?: number | string;
   className?: string;
 }
 
@@ -78,7 +78,7 @@ export const DataTable: React.FC<DataTableProps> = ({
           onClick: () => handleRowClick(record),
         })}
         pagination={false}
-        scroll={{ y: height - 60 }}
+        scroll={{ y: typeof height === 'number' ? height - 50 : 'calc(100% - 50px)' }}
         size="small"
       />
     </div>
