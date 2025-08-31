@@ -338,11 +338,12 @@ export default function App() {
                 style={{ marginRight: 16 }}
               />
             )}
-            <Title level={3} style={{ 
+            <Title level={4} style={{ 
               margin: 0, 
               color: 'var(--theme-text)',
               fontFamily: 'var(--font-heading)',
-              fontWeight: 'var(--font-weight-semibold)'
+              fontWeight: 'var(--font-weight-bold)',
+              fontSize: 'clamp(16px, 2.5vw, 20px)'
             }}>
               {currentTitle}
             </Title>
