@@ -10,6 +10,7 @@ export interface AbstractPageViewProps {
   title?: string;
   filterConfig?: FilterConfig;
   actions?: ActionButton[];
+  drawerActions?: ActionButton[];
   children: React.ReactNode;
   drawerContent?: React.ReactNode;
   drawerSections?: DrawerSection[];
@@ -25,6 +26,7 @@ export const AbstractPageView: React.FC<AbstractPageViewProps> = ({
   title,
   filterConfig,
   actions = [],
+  drawerActions = [],
   children,
   drawerContent,
   drawerSections,
@@ -136,6 +138,7 @@ export const AbstractPageView: React.FC<AbstractPageViewProps> = ({
         width={drawerWidth}
         sections={drawerSections}
         showActionPanel={true}
+        drawerActions={drawerActions}
         hasUnsavedChanges={hasUnsavedChanges}
         onSave={handleDrawerSave}
         onDiscard={handleDrawerDiscard}

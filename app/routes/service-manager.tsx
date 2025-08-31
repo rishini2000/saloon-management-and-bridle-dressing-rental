@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusOutlined, CalendarOutlined, UserOutlined, EditOutlined, TagOutlined, ExportOutlined } from '@ant-design/icons';
+import { PlusOutlined, CalendarOutlined, UserOutlined, EditOutlined, TagOutlined, ExportOutlined, DollarOutlined, ToolOutlined, ImportOutlined, SettingOutlined, InboxOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import type { FilterConfig } from '../components/FilterComponent';
@@ -88,10 +88,17 @@ export default function ServiceManager() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: '+ New',
+      label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
+    },
+    {
+      key: 'archive',
+      label: 'Archive',
+      icon: <InboxOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Archive services')
     },
     {
       key: 'export',
@@ -115,6 +122,7 @@ export default function ServiceManager() {
       onClick: () => console.log('Update pricing for:', selectedServices)
     }
   ];
+
 
   const handleSelectionChange = (selectedIds: string[]) => {
     setSelectedServices(selectedIds);

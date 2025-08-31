@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusOutlined, CalendarOutlined, UserOutlined } from '@ant-design/icons';
+import { PlusOutlined, CalendarOutlined, ExportOutlined, ImportOutlined, SettingOutlined, InboxOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { GanttChart } from '../components/GanttChart';
 import type { GanttTask, GanttResource } from '../components/GanttChart';
@@ -102,7 +102,7 @@ export default function AppointmentManager() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: '+ New',
+      label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
@@ -110,9 +110,23 @@ export default function AppointmentManager() {
     {
       key: 'archive',
       label: 'Archive',
-      icon: <CalendarOutlined />,
+      icon: <InboxOutlined />,
       iconOnly: true,
       onClick: () => console.log('Archive appointments')
+    },
+    {
+      key: 'export',
+      label: 'Export',
+      icon: <ExportOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Export appointments')
+    },
+    {
+      key: 'reschedule',
+      label: 'Reschedule Selected',
+      icon: <CalendarOutlined />,
+      disabled: selectedAppointments.length === 0,
+      onClick: () => console.log('Reschedule appointments:', selectedAppointments)
     }
   ];
 

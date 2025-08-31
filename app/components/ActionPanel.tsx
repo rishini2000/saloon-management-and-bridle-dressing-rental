@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Space } from 'antd';
+import { Button, Space, Tooltip } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, MoreOutlined } from '@ant-design/icons';
 
 export interface ActionButton {
@@ -41,23 +41,30 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ actions, className }) 
       gap: '8px'
     }}>
       <Space size="small">
-        {getVisibleActions().map((action) => (
-          <Button
-            key={action.key}
-            type={action.type || 'default'}
-            icon={action.icon}
-            danger={action.danger}
-            disabled={action.disabled}
-            onClick={() => handleActionClick(action)}
-            title={action.iconOnly ? action.label : undefined}
-            style={{
-              fontFamily: 'var(--font-primary)',
-              fontWeight: 'var(--font-weight-medium)'
-            }}
-          >
-            {!action.iconOnly && action.label}
-          </Button>
-        ))}
+        {getVisibleActions().map((action) => {
+          const button = (
+            <Button
+              key={action.key}
+              type={action.type || 'default'}
+              icon={action.icon}
+              danger={action.danger}
+              disabled={action.disabled}
+              onClick={() => handleActionClick(action)}
+              style={{
+                fontFamily: 'var(--font-primary)',
+                fontWeight: 'var(--font-weight-medium)'
+              }}
+            >
+              {!action.iconOnly && action.label}
+            </Button>
+          );
+
+          return action.iconOnly ? (
+            <Tooltip key={action.key} title={action.label}>
+              {button}
+            </Tooltip>
+          ) : button;
+        })}
       </Space>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined, ExportOutlined, ImportOutlined, SettingOutlined, CalendarOutlined, InboxOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import type { FilterConfig } from '../components/FilterComponent';
@@ -84,15 +84,22 @@ export default function EmployeeManager() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: '+ New',
+      label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
     },
     {
+      key: 'archive',
+      label: 'Archive',
+      icon: <InboxOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Archive employees')
+    },
+    {
       key: 'export',
       label: 'Export',
-      icon: <UserOutlined />,
+      icon: <ExportOutlined />,
       iconOnly: true,
       onClick: () => console.log('Export employees')
     },
@@ -104,6 +111,7 @@ export default function EmployeeManager() {
       onClick: () => console.log('View schedule for:', selectedEmployees)
     }
   ];
+
 
   const handleSelectionChange = (selectedIds: string[]) => {
     setSelectedEmployees(selectedIds);

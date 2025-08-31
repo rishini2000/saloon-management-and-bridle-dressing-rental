@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusOutlined, UserOutlined, PhoneOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined, ExportOutlined, ImportOutlined, SettingOutlined, PhoneOutlined, InboxOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import type { FilterConfig } from '../components/FilterComponent';
@@ -74,15 +74,22 @@ export default function CRM() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: '+ New',
+      label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
     },
     {
+      key: 'archive',
+      label: 'Archive',
+      icon: <InboxOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Archive customers')
+    },
+    {
       key: 'export',
       label: 'Export',
-      icon: <UserOutlined />,
+      icon: <ExportOutlined />,
       iconOnly: true,
       onClick: () => console.log('Export customers')
     },
@@ -94,6 +101,7 @@ export default function CRM() {
       onClick: () => console.log('Contact customers:', selectedCustomers)
     }
   ];
+
 
   const handleSelectionChange = (selectedIds: string[]) => {
     setSelectedCustomers(selectedIds);

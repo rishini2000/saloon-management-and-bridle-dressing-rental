@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusOutlined, CalendarOutlined, UserOutlined, ExportOutlined } from '@ant-design/icons';
+import { PlusOutlined, ExportOutlined, DollarOutlined, FileOutlined, ImportOutlined, SettingOutlined, InboxOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { DataTable, type DataTableColumn } from '../components/DataTable';
 import type { FilterConfig } from '../components/FilterComponent';
@@ -75,10 +75,17 @@ export default function Invoicing() {
   const actions: ActionButton[] = [
     {
       key: 'new',
-      label: '+ New',
+      label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
       onClick: () => setShowDrawer(true)
+    },
+    {
+      key: 'archive',
+      label: 'Archive',
+      icon: <InboxOutlined />,
+      iconOnly: true,
+      onClick: () => console.log('Archive invoices')
     },
     {
       key: 'export',
@@ -86,6 +93,13 @@ export default function Invoicing() {
       icon: <ExportOutlined />,
       iconOnly: true,
       onClick: () => console.log('Export invoices')
+    },
+    {
+      key: 'send',
+      label: 'Send Selected',
+      icon: <DollarOutlined />,
+      disabled: selectedInvoices.length === 0,
+      onClick: () => console.log('Send invoices:', selectedInvoices)
     }
   ];
 

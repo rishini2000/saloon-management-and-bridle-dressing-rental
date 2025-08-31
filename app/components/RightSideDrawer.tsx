@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Space, Collapse, Divider } from 'antd';
 import { SaveOutlined, CloseOutlined, EditOutlined } from '@ant-design/icons';
+import { ActionPanel, type ActionButton } from './ActionPanel';
 
 const { Panel } = Collapse;
 
@@ -20,6 +21,7 @@ interface RightSideDrawerProps {
   children?: React.ReactNode;
   sections?: DrawerSection[];
   showActionPanel?: boolean;
+  drawerActions?: ActionButton[];
   hasUnsavedChanges?: boolean;
   onSave?: () => void;
   onDiscard?: () => void;
@@ -34,6 +36,7 @@ export const RightSideDrawer: React.FC<RightSideDrawerProps> = ({
   children,
   sections = [],
   showActionPanel = false,
+  drawerActions = [],
   hasUnsavedChanges = false,
   onSave,
   onDiscard,
@@ -203,6 +206,16 @@ export const RightSideDrawer: React.FC<RightSideDrawerProps> = ({
         overflow: 'auto'
       }}>
         {renderSections()}
+        
+        {/* Drawer Actions */}
+        {drawerActions.length > 0 && (
+          <>
+            <Divider />
+            <div style={{ marginTop: '16px' }}>
+              <ActionPanel actions={drawerActions} />
+            </div>
+          </>
+        )}
       </div>
       {renderActionPanel()}
     </Drawer>
