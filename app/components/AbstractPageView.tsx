@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Layout } from 'antd';
 import { FilterComponent, type FilterConfig, type FilterValues } from './FilterComponent';
 import { ActionPanel, type ActionButton } from './ActionPanel';
-import { RightSideDrawer, type DrawerSection } from './RightSideDrawer';
+import { RightSideDrawer, type DrawerSection, type DrawerVisualArea, type DrawerActionButton } from './RightSideDrawer';
 
 const { Content } = Layout;
 
@@ -16,10 +16,19 @@ export interface AbstractPageViewProps {
   drawerSections?: DrawerSection[];
   drawerTitle?: string;
   drawerWidth?: number;
-  showDrawer?: boolean;
+  drawerOpen?: boolean;
   onDrawerClose?: () => void;
   onFiltersChange?: (filters: FilterValues) => void;
   className?: string;
+  // New enhanced drawer props
+  drawerVisualArea?: DrawerVisualArea;
+  drawerQuickActions?: DrawerActionButton[];
+  showSaveDiscardPanel?: boolean;
+  hasUnsavedChanges?: boolean;
+  onSave?: () => void;
+  onDiscard?: () => void;
+  // Legacy prop for backward compatibility
+  showDrawer?: boolean;
 }
 
 export const AbstractPageView: React.FC<AbstractPageViewProps> = ({
@@ -29,22 +38,34 @@ export const AbstractPageView: React.FC<AbstractPageViewProps> = ({
   drawerActions = [],
   children,
   drawerContent,
-  drawerSections,
-  drawerTitle,
-  drawerWidth,
-  showDrawer = false,
+  drawerSections = [],
+  drawerTitle = 'Details',
+  drawerWidth = 400,
+  drawerOpen = false,
   onDrawerClose,
   onFiltersChange,
-  className
+  className,
+  // New enhanced drawer props
+  drawerVisualArea,
+  drawerQuickActions = [],
+  showSaveDiscardPanel = false,
+  hasUnsavedChanges = false,
+  onSave,
+  onDiscard,
+  // Legacy prop
+  showDrawer = false
 }) => {
   const [filters, setFilters] = useState<FilterValues>({});
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [internalDrawerOpen, setInternalDrawerOpen] = useState(false);
+  
+  // Use external drawerOpen prop if provided, otherwise use internal state
+  const isDrawerOpen = drawerOpen !== undefined ? drawerOpen : (showDrawer !== undefined ? showDrawer : internalDrawerOpen);
+  const [hasUnsavedChangesState, setHasUnsavedChanges] = useState(hasUnsavedChanges);
 
   // Sync drawer state with prop
   React.useEffect(() => {
-    setDrawerOpen(showDrawer);
-  }, [showDrawer]);
+    setInternalDrawerOpen(drawerOpen);
+  }, [drawerOpen]);
 
   // Event broker functions
   const handleFiltersChange = useCallback((newFilters: FilterValues) => {
@@ -55,7 +76,7 @@ export const AbstractPageView: React.FC<AbstractPageViewProps> = ({
   }, [onFiltersChange]);
 
   const handleDrawerClose = useCallback(() => {
-    setDrawerOpen(false);
+    setInternalDrawerOpen(false);
     if (onDrawerClose) {
       onDrawerClose();
     }
@@ -73,11 +94,11 @@ export const AbstractPageView: React.FC<AbstractPageViewProps> = ({
 
   // Public methods for parent components to control drawer
   const openDrawer = useCallback(() => {
-    setDrawerOpen(true);
+    setInternalDrawerOpen(true);
   }, []);
 
   const closeDrawer = useCallback(() => {
-    setDrawerOpen(false);
+    setInternalDrawerOpen(false);
   }, []);
 
   const markDrawerAsModified = useCallback(() => {
@@ -132,16 +153,28 @@ export const AbstractPageView: React.FC<AbstractPageViewProps> = ({
 
       {/* Right Side Drawer */}
       <RightSideDrawer
-        open={drawerOpen}
-        onClose={handleDrawerClose}
+        open={isDrawerOpen}
+        onClose={() => {
+          if (drawerOpen !== undefined) {
+            onDrawerClose?.();
+          } else {
+            setInternalDrawerOpen(false);
+            onDrawerClose?.();
+          }
+        }}
         title={drawerTitle}
         width={drawerWidth}
         sections={drawerSections}
-        showActionPanel={true}
+        visualArea={drawerVisualArea}
+        actionButtons={drawerActions}
+        quickActionButtons={drawerQuickActions}
+        showSaveDiscardPanel={showSaveDiscardPanel}
+        hasUnsavedChanges={hasUnsavedChangesState}
+        onSave={onSave || handleDrawerSave}
+        onDiscard={onDiscard || handleDrawerDiscard}
+        // Legacy props for backward compatibility
+        showActionPanel={drawerActions.length > 0}
         drawerActions={drawerActions}
-        hasUnsavedChanges={hasUnsavedChanges}
-        onSave={handleDrawerSave}
-        onDiscard={handleDrawerDiscard}
       >
         {drawerContent}
       </RightSideDrawer>

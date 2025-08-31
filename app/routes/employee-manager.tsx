@@ -1,13 +1,151 @@
 import React, { useState } from 'react';
-import { PlusOutlined, UserOutlined, ExportOutlined, ImportOutlined, SettingOutlined, CalendarOutlined, InboxOutlined } from '@ant-design/icons';
+import { Button, Tag, Avatar, Space, Input, Select, Form, Rate, Progress } from 'antd';
+import { PlusOutlined, ExportOutlined, InboxOutlined, CalendarOutlined, UserOutlined, MailOutlined, PhoneOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
-import { DataTable, type DataTableColumn } from '../components/DataTable';
-import type { FilterConfig } from '../components/FilterComponent';
+import { DataTable } from '../components/DataTable';
 import type { ActionButton } from '../components/ActionPanel';
+import type { FilterConfig } from '../components/FilterComponent';
+import type { DrawerSection, DrawerVisualArea, DrawerActionButton } from '../components/RightSideDrawer';
+
+const { TextArea } = Input;
+const { Option } = Select;
 
 export default function EmployeeManager() {
-  const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Employee details drawer configuration
+  const getEmployeeVisualArea = (): DrawerVisualArea | undefined => {
+    if (!selectedEmployee) return undefined;
+    
+    return {
+      content: (
+        <div style={{ textAlign: 'center' }}>
+          <Avatar size={64} icon={<UserOutlined />} style={{ marginBottom: '8px' }} />
+          <div style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--theme-text)' }}>
+            {selectedEmployee.name}
+          </div>
+          <div style={{ fontSize: '14px', color: 'var(--theme-text-secondary)', marginBottom: '8px' }}>
+            {selectedEmployee.position}
+          </div>
+          <Tag color={selectedEmployee.status === 'Active' ? 'green' : selectedEmployee.status === 'On Leave' ? 'orange' : 'red'}>
+            {selectedEmployee.status}
+          </Tag>
+        </div>
+      ),
+      height: 160
+    };
+  };
+
+  const getEmployeeQuickActions = (): DrawerActionButton[] => {
+    if (!selectedEmployee) return [];
+    
+    return [
+      {
+        key: 'schedule',
+        label: 'View Schedule',
+        icon: <CalendarOutlined />,
+        onClick: () => console.log('Viewing schedule for:', selectedEmployee.name)
+      },
+      {
+        key: 'contact',
+        label: 'Contact Employee',
+        icon: <PhoneOutlined />,
+        onClick: () => console.log('Contacting employee:', selectedEmployee.phone)
+      },
+      {
+        key: 'timeoff',
+        label: 'Manage Time Off',
+        icon: <ClockCircleOutlined />,
+        onClick: () => console.log('Managing time off for:', selectedEmployee.name)
+      }
+    ];
+  };
+
+  const getEmployeeSections = (): DrawerSection[] => {
+    if (!selectedEmployee) return [];
+    
+    return [
+      {
+        key: 'personal',
+        title: 'Personal Information',
+        content: (
+          <Form layout="vertical" size="middle">
+            <Form.Item label="Email">
+              <Input 
+                prefix={<MailOutlined />} 
+                value={selectedEmployee.email} 
+                readOnly 
+              />
+            </Form.Item>
+            <Form.Item label="Phone">
+              <Input 
+                prefix={<PhoneOutlined />} 
+                value={selectedEmployee.phone} 
+                readOnly 
+              />
+            </Form.Item>
+            <Form.Item label="Hire Date">
+              <Input 
+                value={selectedEmployee.hireDate} 
+                readOnly 
+              />
+            </Form.Item>
+          </Form>
+        ),
+        defaultOpen: true
+      },
+      {
+        key: 'performance',
+        title: 'Performance & Skills',
+        content: (
+          <div>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <div>
+                <div style={{ marginBottom: '8px' }}>Overall Rating</div>
+                <Rate disabled value={4.5} allowHalf />
+                <span style={{ marginLeft: '8px', color: 'var(--theme-text-secondary)' }}>4.5/5</span>
+              </div>
+              <div>
+                <div style={{ marginBottom: '8px' }}>Customer Satisfaction</div>
+                <Progress percent={92} size="small" />
+              </div>
+              <div>
+                <div style={{ marginBottom: '8px' }}>Skills</div>
+                <Space wrap>
+                  <Tag>Haircuts</Tag>
+                  <Tag>Styling</Tag>
+                  <Tag>Coloring</Tag>
+                  <Tag>Treatments</Tag>
+                </Space>
+              </div>
+            </Space>
+          </div>
+        )
+      },
+      {
+        key: 'schedule',
+        title: 'Schedule & Availability',
+        content: (
+          <div>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <div style={{ padding: '8px', backgroundColor: 'var(--theme-background)', borderRadius: '4px' }}>
+                <div style={{ fontWeight: 'bold' }}>This Week</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Mon-Fri: 9:00 AM - 6:00 PM</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Sat: 9:00 AM - 4:00 PM</div>
+              </div>
+              <div style={{ padding: '8px', backgroundColor: 'var(--theme-background)', borderRadius: '4px' }}>
+                <div style={{ fontWeight: 'bold' }}>Upcoming Appointments</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Today: 8 appointments</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Tomorrow: 6 appointments</div>
+              </div>
+            </Space>
+          </div>
+        )
+      }
+    ];
+  };
 
   // Sample employee data
   const employeeData = [
@@ -40,12 +178,12 @@ export default function EmployeeManager() {
     }
   ];
 
-  const columns: DataTableColumn[] = [
+  const columns = [
     { id: 'name', header: 'Name', width: 150, sort: true },
     { id: 'position', header: 'Position', width: 140, sort: true },
     { id: 'email', header: 'Email', width: 200 },
     { id: 'phone', header: 'Phone', width: 130 },
-    { id: 'hireDate', header: 'Hire Date', width: 120, type: 'date', sort: true },
+    { id: 'hireDate', header: 'Hire Date', width: 120, type: 'date' as const, sort: true },
     { id: 'status', header: 'Status', width: 100 }
   ];
 
@@ -87,7 +225,7 @@ export default function EmployeeManager() {
       label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
-      onClick: () => setShowDrawer(true)
+      onClick: () => setDrawerOpen(true)
     },
     {
       key: 'archive',
@@ -107,19 +245,18 @@ export default function EmployeeManager() {
       key: 'schedule',
       label: 'View Schedule',
       icon: <CalendarOutlined />,
-      disabled: selectedEmployees.length === 0,
-      onClick: () => console.log('View schedule for:', selectedEmployees)
+      disabled: selectedRowKeys.length === 0,
+      onClick: () => console.log('View schedule for:', selectedRowKeys)
     }
   ];
 
-
-  const handleSelectionChange = (selectedIds: string[]) => {
-    setSelectedEmployees(selectedIds);
+  const handleRowSelect = (selectedKeys: React.Key[]) => {
+    setSelectedRowKeys(selectedKeys);
   };
 
-  const handleRowClick = (rowData: any) => {
-    console.log('Employee clicked:', rowData);
-    setShowDrawer(true);
+  const handleRowClick = (record: any) => {
+    setSelectedEmployee(record);
+    setDrawerOpen(true);
   };
 
   return (
@@ -128,15 +265,22 @@ export default function EmployeeManager() {
         title="Employee Manager"
         filterConfig={filterConfig}
         actions={actions}
-        showDrawer={showDrawer}
-        onDrawerClose={() => setShowDrawer(false)}
-        drawerTitle="Employee Details"
-        drawerWidth={400}
+        drawerOpen={drawerOpen}
+        onDrawerClose={() => {
+          setDrawerOpen(false);
+          setSelectedEmployee(null);
+        }}
+        drawerTitle={selectedEmployee ? `${selectedEmployee.name} Details` : 'Employee Details'}
+        drawerWidth={450}
+        drawerVisualArea={getEmployeeVisualArea()}
+        drawerQuickActions={getEmployeeQuickActions()}
+        drawerSections={getEmployeeSections()}
+        showSaveDiscardPanel={false}
       >
         <DataTable
           columns={columns}
           data={employeeData}
-          onSelectionChange={handleSelectionChange}
+          onSelectionChange={handleRowSelect}
           onRowClick={handleRowClick}
           height="100%"
         />

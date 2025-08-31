@@ -13,19 +13,42 @@ export interface DrawerSection {
   defaultOpen?: boolean;
 }
 
+export interface DrawerVisualArea {
+  content: React.ReactNode;
+  height?: number;
+  backgroundColor?: string;
+}
+
+export interface DrawerActionButton {
+  key: string;
+  label: string;
+  onClick: () => void;
+  icon?: React.ReactNode;
+}
+
 interface RightSideDrawerProps {
   open: boolean;
   onClose: () => void;
   title?: string;
   width?: number;
   children?: React.ReactNode;
+  // Visual area at the top (e.g., status indicators, images, etc.)
+  visualArea?: DrawerVisualArea;
+  // Action buttons area (below visual area)
+  actionButtons?: ActionButton[];
+  // Quick action buttons below visual area (gray borderless link buttons)
+  quickActionButtons?: DrawerActionButton[];
+  // Collapsible content sections
   sections?: DrawerSection[];
-  showActionPanel?: boolean;
-  drawerActions?: ActionButton[];
+  // Save/Discard area at bottom
+  showSaveDiscardPanel?: boolean;
   hasUnsavedChanges?: boolean;
   onSave?: () => void;
   onDiscard?: () => void;
   className?: string;
+  // Legacy props for backward compatibility
+  showActionPanel?: boolean;
+  drawerActions?: ActionButton[];
 }
 
 export const RightSideDrawer: React.FC<RightSideDrawerProps> = ({
@@ -34,13 +57,18 @@ export const RightSideDrawer: React.FC<RightSideDrawerProps> = ({
   title = 'Details',
   width = 400,
   children,
+  visualArea,
+  actionButtons = [],
+  quickActionButtons = [],
   sections = [],
-  showActionPanel = false,
-  drawerActions = [],
+  showSaveDiscardPanel = false,
   hasUnsavedChanges = false,
   onSave,
   onDiscard,
-  className
+  className,
+  // Legacy props
+  showActionPanel = false,
+  drawerActions = []
 }) => {
   const [activeKeys, setActiveKeys] = useState<string[]>([]);
 
@@ -78,8 +106,87 @@ export const RightSideDrawer: React.FC<RightSideDrawerProps> = ({
     }
   };
 
-  const renderActionPanel = () => {
-    if (!showActionPanel) return null;
+  const renderVisualArea = () => {
+    return visualArea && (
+      <div 
+        style={{ 
+          height: visualArea.height || 120, 
+          backgroundColor: visualArea.backgroundColor || 'var(--theme-background)', 
+          borderBottom: '1px solid var(--theme-border)', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          padding: '16px'
+        }}
+      >
+        {visualArea.content}
+      </div>
+    );
+  };
+
+  const renderActionButtons = () => {
+    const buttons = actionButtons.length > 0 ? actionButtons : drawerActions;
+    if (buttons.length === 0) return null;
+
+    return (
+      <div style={{
+        padding: '16px',
+        borderBottom: '1px solid var(--theme-border)',
+        backgroundColor: 'var(--theme-surface)'
+      }}>
+        <ActionPanel actions={buttons} />
+      </div>
+    );
+  };
+
+  const renderQuickActionButtons = () => {
+    if (quickActionButtons.length === 0) return null;
+
+    return (
+      <div style={{
+        padding: '12px 16px',
+        borderBottom: '1px solid var(--theme-border)',
+        backgroundColor: 'var(--theme-background)',
+        display: 'flex',
+        justifyContent: 'center'
+      }}>
+        <Space wrap size="small">
+          {quickActionButtons.map((button) => (
+            <Button
+              key={button.key}
+              type="link"
+              size="small"
+              icon={button.icon}
+              onClick={button.onClick}
+              style={{
+                color: 'var(--theme-text-secondary)',
+                padding: '4px 8px',
+                height: 'auto',
+                border: 'none',
+                fontSize: '12px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--theme-text)';
+                e.currentTarget.style.backgroundColor = 'var(--theme-border)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--theme-text-secondary)';
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              {button.label}
+            </Button>
+          ))}
+        </Space>
+      </div>
+    );
+  };
+
+  const renderSaveDiscardPanel = () => {
+    if (!showSaveDiscardPanel && !showActionPanel) return null;
 
     return (
       <div style={{
@@ -107,117 +214,159 @@ export const RightSideDrawer: React.FC<RightSideDrawerProps> = ({
     );
   };
 
-  const renderSections = () => {
-    if (sections.length === 0) return children;
-
-    const collapsibleSections = sections.filter(section => section.collapsible !== false);
-    const nonCollapsibleSections = sections.filter(section => section.collapsible === false);
+  const renderContentSections = () => {
+    if (sections.length === 0 && !children) return null;
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {/* Non-collapsible sections */}
-        {nonCollapsibleSections.map((section, index) => (
-          <div key={section.key}>
-            {section.title && (
-              <h4 style={{ 
-                margin: '16px 0 12px 0',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 'var(--font-weight-semibold)',
-                color: 'var(--theme-text)'
-              }}>
-                {section.title}
-              </h4>
-            )}
-            <div style={{ marginBottom: '16px' }}>
-              {section.content}
-            </div>
-            {index < nonCollapsibleSections.length - 1 && <Divider />}
-          </div>
-        ))}
-
+      <div className="drawer-content-scrollable" style={{ flex: 1, overflow: 'auto', paddingLeft: '12px', paddingRight: '12px', direction: 'rtl' }}>
         {/* Collapsible sections */}
-        {collapsibleSections.length > 0 && (
-          <>
-            {nonCollapsibleSections.length > 0 && <Divider />}
-            <Collapse
-              activeKey={activeKeys}
-              onChange={handleCollapseChange}
-              ghost
-              style={{ flex: 1 }}
-            >
-              {collapsibleSections.map((section) => (
-                <Panel
-                  key={section.key}
-                  header={section.title}
-                  style={{
-                    fontFamily: 'var(--font-primary)'
-                  }}
-                >
+        {sections.length > 0 && (
+          <Collapse
+            activeKey={activeKeys}
+            onChange={handleCollapseChange}
+            ghost
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              marginTop: '0px',
+              direction: 'ltr'
+            }}
+          >
+            {sections.map((section) => (
+              <Panel
+                key={section.key}
+                header={section.title}
+                style={{
+                  fontFamily: 'var(--font-primary)',
+                  backgroundColor: 'transparent',
+                  marginBottom: '0px',
+                  borderRadius: '0px',
+                  border: 'none',
+                  borderBottom: section.key === sections[sections.length - 1]?.key ? 'none' : '1px solid var(--theme-border)'
+                }}
+                className="custom-collapse-panel"
+              >
+                <div style={{ padding: '8px 0px' }}>
                   {section.content}
-                </Panel>
-              ))}
-            </Collapse>
-          </>
+                </div>
+              </Panel>
+            ))}
+          </Collapse>
         )}
 
         {/* Custom children content */}
         {children && (
-          <>
-            <Divider />
-            <div style={{ flex: 1 }}>
-              {children}
-            </div>
-          </>
+          <div style={{ 
+            padding: sections.length > 0 ? '16px 0 0 0' : '0',
+            flex: 1
+          }}>
+            {children}
+          </div>
         )}
       </div>
     );
   };
 
   return (
-    <Drawer
-      title={title}
-      placement="right"
-      onClose={onClose}
-      open={open}
-      width={width}
-      className={className}
+    <>
+      <style>
+        {`
+          .custom-collapse-panel {
+            border-radius: 0 !important;
+          }
+          .custom-collapse-panel .ant-collapse-header {
+            border-bottom: 1px solid var(--theme-border) !important;
+            background-color: transparent !important;
+            border-radius: 0 !important;
+          }
+          .custom-collapse-panel .ant-collapse-content {
+            border-top: none !important;
+            background-color: transparent !important;
+            border-radius: 0 !important;
+          }
+          .custom-collapse-panel .ant-collapse-content-box {
+            border-top: none !important;
+          }
+          .custom-collapse-panel:last-child {
+            border-radius: 0 !important;
+          }
+          .custom-collapse-panel:last-child .ant-collapse-header {
+            border-radius: 0 !important;
+            border-bottom: none !important;
+          }
+          .custom-collapse-panel:last-child .ant-collapse-content {
+            border-radius: 0 !important;
+          }
+          /* Custom scrollbar styling for sharp edges */
+          .drawer-content-scrollable::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+          }
+          .drawer-content-scrollable::-webkit-scrollbar-track {
+            background: var(--theme-surface);
+            border-radius: 0;
+          }
+          .drawer-content-scrollable::-webkit-scrollbar-thumb {
+            background: var(--theme-border);
+            border-radius: 0;
+          }
+          .drawer-content-scrollable::-webkit-scrollbar-thumb:hover {
+            background: var(--theme-primary);
+          }
+        `}
+      </style>
+      <Drawer
+        title={null}
+        placement="right"
+        onClose={onClose}
+        open={open}
+        width={width}
+        className={className}
       styles={{
         body: { 
           padding: 0,
           display: 'flex',
           flexDirection: 'column',
-          height: '100%'
+          height: '100%',
+          borderLeft: '1px solid var(--theme-border)'
+        },
+        header: {
+          borderBottom: 'none',
+          backgroundColor: 'var(--theme-background)',
+          borderLeft: '1px solid var(--theme-border)'
         }
       }}
-      extra={
-        <Button 
-          type="text" 
-          icon={<CloseOutlined />} 
-          onClick={onClose}
-          size="small"
-        />
-      }
+      closeIcon={<CloseOutlined />}
     >
       <div style={{ 
-        flex: 1, 
-        padding: '16px',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'auto'
+        height: '100%'
       }}>
-        {renderSections()}
+        {/* Visual Area */}
+        {renderVisualArea()}
         
-        {/* Drawer Actions */}
-        {drawerActions.length > 0 && (
-          <>
-            <Divider />
-            <div style={{ marginTop: '16px' }}>
-              <ActionPanel actions={drawerActions} />
-            </div>
-          </>
-        )}
+        {/* Quick Action Buttons */}
+        {renderQuickActionButtons()}
+        
+        {/* Action Buttons Area */}
+        {renderActionButtons()}
+        
+        {/* Content Sections */}
+        <div style={{ 
+          flex: 1, 
+          padding: '0', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          overflow: 'hidden'
+        }}>
+          {renderContentSections()}
+        </div>
+        
+        {/* Save/Discard Panel */}
+        {renderSaveDiscardPanel()}
       </div>
-      {renderActionPanel()}
     </Drawer>
+    </>
   );
 };

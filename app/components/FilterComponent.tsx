@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Input, Select, DatePicker, Button, Space, Dropdown, Menu } from 'antd';
-import { SearchOutlined, CalendarOutlined, FilterOutlined, ClearOutlined } from '@ant-design/icons';
+import { Input, Select, DatePicker, Button, Space, Dropdown, Menu, Tooltip } from 'antd';
+import { SearchOutlined, CalendarOutlined, ReloadOutlined, FilterOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 
@@ -63,17 +63,17 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
       case 'yesterday':
         const yesterday = now.subtract(1, 'day');
         return [yesterday.startOf('day'), yesterday.endOf('day')];
-      case 'thisWeek':
+      case 'this-week':
         return [now.startOf('week'), now.endOf('week')];
-      case 'lastWeek':
+      case 'last-week':
         const lastWeek = now.subtract(1, 'week');
         return [lastWeek.startOf('week'), lastWeek.endOf('week')];
-      case 'thisMonth':
+      case 'this-month':
         return [now.startOf('month'), now.endOf('month')];
-      case 'lastMonth':
+      case 'last-month':
         const lastMonth = now.subtract(1, 'month');
         return [lastMonth.startOf('month'), lastMonth.endOf('month')];
-      case 'thisYear':
+      case 'this-year':
         return [now.startOf('year'), now.endOf('year')];
       default:
         return null;
@@ -133,7 +133,7 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
     setHasChanges(prev => prev !== hasAnyChanges ? hasAnyChanges : prev);
   }, []);
 
-  const resetFilters = () => {
+  const handleResetFilters = () => {
     const emptyFilters: FilterValues = {};
     setFilters(emptyFilters);
     setDatePreset('');
@@ -141,13 +141,27 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
     setHasChanges(false);
   };
 
+  const handleApplyFilters = () => {
+    onFiltersChange(filters);
+  };
+
   const dateRangeMenu = (
     <Menu
       onClick={({ key }) => handleDatePresetSelect(key)}
-      items={DATE_PRESETS.map(preset => ({
-        key: preset.value,
-        label: preset.label
-      }))}
+      items={[
+        // Current period group
+        { key: 'today', label: 'Today' },
+        { key: 'this-week', label: 'This Week' },
+        { key: 'this-month', label: 'This Month' },
+        { type: 'divider' },
+        // Previous period group
+        { key: 'yesterday', label: 'Yesterday' },
+        { key: 'last-week', label: 'Last Week' },
+        { key: 'last-month', label: 'Last Month' },
+        { type: 'divider' },
+        // Custom range
+        { key: 'custom', label: 'Custom Range' }
+      ]}
     />
   );
 
@@ -179,7 +193,16 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
           <Space.Compact>
             <Dropdown overlay={dateRangeMenu} trigger={['click']}>
               <Button icon={<CalendarOutlined />} size="small">
-                {datePreset ? DATE_PRESETS.find(p => p.value === datePreset)?.label : 'Date Range'}
+                {datePreset ? (
+                  datePreset === 'today' ? 'Today' :
+                  datePreset === 'yesterday' ? 'Yesterday' :
+                  datePreset === 'this-week' ? 'This Week' :
+                  datePreset === 'last-week' ? 'Last Week' :
+                  datePreset === 'this-month' ? 'This Month' :
+                  datePreset === 'last-month' ? 'Last Month' :
+                  datePreset === 'custom' ? 'Custom Range' :
+                  'Date Range'
+                ) : 'Date Range'}
               </Button>
             </Dropdown>
             {datePreset === 'custom' && (
@@ -213,26 +236,23 @@ export const FilterComponent: React.FC<FilterComponentProps> = ({
           />
         ))}
 
-        {/* Filter Action Buttons */}
-        {hasChanges && (
-          <>
-            <Button
-              icon={<ClearOutlined />}
-              onClick={resetFilters}
-              type="text"
-              size="small"
-              title="Reset Filters"
-              style={{ color: 'var(--theme-text-secondary)' }}
-            />
-            <Button
-              icon={<FilterOutlined />}
-              onClick={() => onFiltersChange(filters)}
-              type="primary"
-              size="small"
-              title="Apply Filters"
-            />
-          </>
-        )}
+        {/* Reset and Apply Filters */}
+        <Tooltip title="Reset Filters">
+          <Button 
+            icon={<DeleteOutlined />} 
+            size="small"
+            onClick={handleResetFilters}
+          />
+        </Tooltip>
+        
+        <Tooltip title="Apply Filters">
+          <Button 
+            icon={<CheckOutlined />} 
+            size="small"
+            type="primary"
+            onClick={handleApplyFilters}
+          />
+        </Tooltip>
       </Space>
     </div>
   );

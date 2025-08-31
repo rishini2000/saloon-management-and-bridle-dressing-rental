@@ -1,13 +1,149 @@
 import React, { useState } from 'react';
-import { PlusOutlined, UserOutlined, ExportOutlined, ImportOutlined, SettingOutlined, PhoneOutlined, InboxOutlined } from '@ant-design/icons';
+import { Button, Tag, Avatar, Space, Input, Select, Form, Divider } from 'antd';
+import { PlusOutlined, ExportOutlined, InboxOutlined, PhoneOutlined, UserOutlined, MailOutlined, PhoneOutlined as PhoneIcon, CalendarOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
-import { DataTable, type DataTableColumn } from '../components/DataTable';
-import type { FilterConfig } from '../components/FilterComponent';
+import { DataTable } from '../components/DataTable';
 import type { ActionButton } from '../components/ActionPanel';
+import type { FilterConfig } from '../components/FilterComponent';
+import type { DrawerSection, DrawerVisualArea, DrawerActionButton } from '../components/RightSideDrawer';
+
+const { TextArea } = Input;
+const { Option } = Select;
 
 export default function CRM() {
-  const [selectedCustomers, setSelectedCustomers] = useState<string[]>([]);
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Customer details drawer configuration
+  const getCustomerVisualArea = (): DrawerVisualArea | undefined => {
+    if (!selectedCustomer) return undefined;
+    
+    return {
+      content: (
+        <div style={{ textAlign: 'center' }}>
+          <Avatar size={64} icon={<UserOutlined />} style={{ marginBottom: '8px' }} />
+          <div style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--theme-text)' }}>
+            {selectedCustomer.name}
+          </div>
+          <Tag color={selectedCustomer.status === 'Active' ? 'green' : 'orange'}>
+            {selectedCustomer.status}
+          </Tag>
+        </div>
+      ),
+      height: 140
+    };
+  };
+
+  const getCustomerQuickActions = (): DrawerActionButton[] => {
+    if (!selectedCustomer) return [];
+    
+    return [
+      {
+        key: 'call',
+        label: 'Call Customer',
+        icon: <PhoneOutlined />,
+        onClick: () => console.log('Calling customer:', selectedCustomer.phone)
+      },
+      {
+        key: 'email',
+        label: 'Send Email',
+        icon: <MailOutlined />,
+        onClick: () => console.log('Emailing customer:', selectedCustomer.email)
+      },
+      {
+        key: 'schedule',
+        label: 'Schedule Appointment',
+        icon: <CalendarOutlined />,
+        onClick: () => console.log('Scheduling appointment for:', selectedCustomer.name)
+      }
+    ];
+  };
+
+  const getCustomerSections = (): DrawerSection[] => {
+    if (!selectedCustomer) return [];
+    
+    return [
+      {
+        key: 'contact',
+        title: 'Contact Information',
+        content: (
+          <Form layout="vertical" size="middle">
+            <Form.Item label="Email">
+              <Input 
+                prefix={<MailOutlined />} 
+                value={selectedCustomer.email} 
+                readOnly 
+              />
+            </Form.Item>
+            <Form.Item label="Phone">
+              <Input 
+                prefix={<PhoneIcon />} 
+                value={selectedCustomer.phone} 
+                readOnly 
+              />
+            </Form.Item>
+            <Form.Item label="Address">
+              <TextArea 
+                value="123 Main St, City, State 12345" 
+                readOnly 
+                rows={2}
+              />
+            </Form.Item>
+          </Form>
+        ),
+        defaultOpen: true
+      },
+      {
+        key: 'preferences',
+        title: 'Preferences',
+        content: (
+          <Form layout="vertical" size="middle">
+            <Form.Item label="Preferred Services">
+              <Select mode="multiple" value={['Haircut', 'Styling']} disabled>
+                <Option value="haircut">Haircut</Option>
+                <Option value="styling">Styling</Option>
+                <Option value="coloring">Coloring</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="Preferred Staff">
+              <Select value="sarah" disabled>
+                <Option value="sarah">Sarah Johnson</Option>
+                <Option value="mike">Mike Wilson</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="Notes">
+              <TextArea 
+                value="Regular customer, prefers morning appointments" 
+                readOnly 
+                rows={3}
+              />
+            </Form.Item>
+          </Form>
+        )
+      },
+      {
+        key: 'history',
+        title: 'Appointment History',
+        content: (
+          <div>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <div style={{ padding: '8px', backgroundColor: 'var(--theme-background)', borderRadius: '4px' }}>
+                <div style={{ fontWeight: 'bold' }}>Haircut & Styling</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Dec 15, 2024 - Sarah Johnson</div>
+                <div style={{ fontSize: '12px' }}>$85.00</div>
+              </div>
+              <div style={{ padding: '8px', backgroundColor: 'var(--theme-background)', borderRadius: '4px' }}>
+                <div style={{ fontWeight: 'bold' }}>Color Treatment</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Nov 20, 2024 - Mike Wilson</div>
+                <div style={{ fontSize: '12px' }}>$150.00</div>
+              </div>
+            </Space>
+          </div>
+        )
+      }
+    ];
+  };
 
   // Sample customer data
   const customerData = [
@@ -40,12 +176,12 @@ export default function CRM() {
     }
   ];
 
-  const columns: DataTableColumn[] = [
+  const columns = [
     { id: 'name', header: 'Name', width: 150, sort: true },
     { id: 'email', header: 'Email', width: 200, sort: true },
     { id: 'phone', header: 'Phone', width: 130 },
-    { id: 'lastVisit', header: 'Last Visit', width: 120, type: 'date', sort: true },
-    { id: 'totalSpent', header: 'Total Spent', width: 120, type: 'string', sort: true },
+    { id: 'lastVisit', header: 'Last Visit', width: 120, type: 'date' as const, sort: true },
+    { id: 'totalSpent', header: 'Total Spent', width: 120, sort: true },
     { id: 'status', header: 'Status', width: 100 }
   ];
 
@@ -77,7 +213,7 @@ export default function CRM() {
       label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
-      onClick: () => setShowDrawer(true)
+      onClick: () => setDrawerOpen(true)
     },
     {
       key: 'archive',
@@ -97,19 +233,18 @@ export default function CRM() {
       key: 'contact',
       label: 'Contact Selected',
       icon: <PhoneOutlined />,
-      disabled: selectedCustomers.length === 0,
-      onClick: () => console.log('Contact customers:', selectedCustomers)
+      disabled: selectedRowKeys.length === 0,
+      onClick: () => console.log('Contact customers:', selectedRowKeys)
     }
   ];
 
-
-  const handleSelectionChange = (selectedIds: string[]) => {
-    setSelectedCustomers(selectedIds);
+  const handleRowSelect = (selectedKeys: React.Key[]) => {
+    setSelectedRowKeys(selectedKeys);
   };
 
-  const handleRowClick = (rowData: any) => {
-    console.log('Customer clicked:', rowData);
-    setShowDrawer(true);
+  const handleRowClick = (record: any) => {
+    setSelectedCustomer(record);
+    setDrawerOpen(true);
   };
 
   return (
@@ -118,15 +253,22 @@ export default function CRM() {
         title="Customer Relationship Manager"
         filterConfig={filterConfig}
         actions={actions}
-        showDrawer={showDrawer}
-        onDrawerClose={() => setShowDrawer(false)}
-        drawerTitle="Customer Details"
-        drawerWidth={400}
+        drawerOpen={drawerOpen}
+        onDrawerClose={() => {
+          setDrawerOpen(false);
+          setSelectedCustomer(null);
+        }}
+        drawerTitle={selectedCustomer ? `${selectedCustomer.name} Details` : 'Customer Details'}
+        drawerWidth={450}
+        drawerVisualArea={getCustomerVisualArea()}
+        drawerQuickActions={getCustomerQuickActions()}
+        drawerSections={getCustomerSections()}
+        showSaveDiscardPanel={false}
       >
         <DataTable
           columns={columns}
           data={customerData}
-          onSelectionChange={handleSelectionChange}
+          onSelectionChange={handleRowSelect}
           onRowClick={handleRowClick}
           height="100%"
         />

@@ -1,14 +1,155 @@
 import React, { useState } from 'react';
-import { PlusOutlined, CalendarOutlined, ExportOutlined, ImportOutlined, SettingOutlined, InboxOutlined } from '@ant-design/icons';
+import { Button, Tag, Space, Input, Select, Form, TimePicker, DatePicker } from 'antd';
+import { PlusOutlined, ExportOutlined, InboxOutlined, ClockCircleOutlined, UserOutlined, ScissorOutlined, CalendarOutlined } from '@ant-design/icons';
 import { AbstractPageView } from '../components/AbstractPageView';
 import { GanttChart } from '../components/GanttChart';
-import type { GanttTask, GanttResource } from '../components/GanttChart';
-import type { FilterConfig } from '../components/FilterComponent';
 import type { ActionButton } from '../components/ActionPanel';
+import type { FilterConfig } from '../components/FilterComponent';
+import type { GanttTask, GanttResource } from '../components/GanttChart';
+import type { DrawerSection, DrawerVisualArea, DrawerActionButton } from '../components/RightSideDrawer';
+import dayjs from 'dayjs';
+
+const { TextArea } = Input;
+const { Option } = Select;
 
 export default function AppointmentManager() {
-  const [selectedAppointments, setSelectedAppointments] = useState<string[]>([]);
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Appointment details drawer configuration
+  const getAppointmentVisualArea = (): DrawerVisualArea | undefined => {
+    if (!selectedAppointment) return undefined;
+    
+    return {
+      content: (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', color: 'var(--theme-text)', marginBottom: '4px' }}>
+            {selectedAppointment.text}
+          </div>
+          <div style={{ fontSize: '14px', color: 'var(--theme-text-secondary)', marginBottom: '8px' }}>
+            {dayjs(selectedAppointment.start).format('MMM DD, YYYY • h:mm A')}
+          </div>
+          <Tag color="blue">
+            {Math.round((selectedAppointment.end - selectedAppointment.start) / (1000 * 60))} minutes
+          </Tag>
+        </div>
+      ),
+      height: 120
+    };
+  };
+
+  const getAppointmentQuickActions = (): DrawerActionButton[] => {
+    if (!selectedAppointment) return [];
+    
+    return [
+      {
+        key: 'reschedule',
+        label: 'Reschedule',
+        icon: <CalendarOutlined />,
+        onClick: () => console.log('Rescheduling appointment:', selectedAppointment.text)
+      },
+      {
+        key: 'checkin',
+        label: 'Check In Customer',
+        icon: <UserOutlined />,
+        onClick: () => console.log('Checking in customer for:', selectedAppointment.text)
+      },
+      {
+        key: 'start',
+        label: 'Start Service',
+        icon: <ScissorOutlined />,
+        onClick: () => console.log('Starting service for:', selectedAppointment.text)
+      }
+    ];
+  };
+
+  const getAppointmentSections = (): DrawerSection[] => {
+    if (!selectedAppointment) return [];
+    
+    return [
+      {
+        key: 'details',
+        title: 'Appointment Details',
+        content: (
+          <Form layout="vertical" size="middle">
+            <Form.Item label="Customer">
+              <Input 
+                prefix={<UserOutlined />} 
+                value="Sarah Johnson" 
+                readOnly 
+              />
+            </Form.Item>
+            <Form.Item label="Service">
+              <Input 
+                prefix={<ScissorOutlined />} 
+                value={selectedAppointment.text} 
+                readOnly 
+              />
+            </Form.Item>
+            <Form.Item label="Staff Member">
+              <Input 
+                value={resources.find(r => r.id === selectedAppointment.resourceId)?.name || 'Unknown'} 
+                readOnly 
+              />
+            </Form.Item>
+            <Form.Item label="Duration">
+              <Input 
+                value={`${Math.round((selectedAppointment.end - selectedAppointment.start) / (1000 * 60))} minutes`} 
+                readOnly 
+              />
+            </Form.Item>
+          </Form>
+        ),
+        defaultOpen: true
+      },
+      {
+        key: 'customer',
+        title: 'Customer Information',
+        content: (
+          <Form layout="vertical" size="middle">
+            <Form.Item label="Phone">
+              <Input value="(555) 123-4567" readOnly />
+            </Form.Item>
+            <Form.Item label="Email">
+              <Input value="sarah.johnson@email.com" readOnly />
+            </Form.Item>
+            <Form.Item label="Notes">
+              <TextArea 
+                value="Regular customer, prefers Sarah as stylist" 
+                readOnly 
+                rows={2}
+              />
+            </Form.Item>
+          </Form>
+        )
+      },
+      {
+        key: 'history',
+        title: 'Service History',
+        content: (
+          <div>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <div style={{ padding: '8px', backgroundColor: 'var(--theme-background)', borderRadius: '4px' }}>
+                <div style={{ fontWeight: 'bold' }}>Previous Visit</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Dec 15, 2024 - Haircut & Styling</div>
+                <div style={{ fontSize: '12px' }}>$85.00</div>
+              </div>
+              <div style={{ padding: '8px', backgroundColor: 'var(--theme-background)', borderRadius: '4px' }}>
+                <div style={{ fontWeight: 'bold' }}>Preferred Services</div>
+                <div style={{ fontSize: '12px', color: 'var(--theme-text-secondary)' }}>Haircut, Styling, Color Touch-up</div>
+              </div>
+            </Space>
+          </div>
+        )
+      }
+    ];
+  };
+
+  const handleTaskClick = (task: GanttTask) => {
+    setSelectedAppointment(task);
+    setDrawerOpen(true);
+  };
 
   // Sample resources (employees and services)
   const resources: GanttResource[] = [
@@ -20,7 +161,7 @@ export default function AppointmentManager() {
   ];
 
   // Sample appointment data
-  const appointmentTasks: GanttTask[] = [
+  const tasks: GanttTask[] = [
     {
       id: '1',
       text: 'Sarah Johnson - Haircut',
@@ -105,7 +246,7 @@ export default function AppointmentManager() {
       label: 'New',
       icon: <PlusOutlined />,
       type: 'primary',
-      onClick: () => setShowDrawer(true)
+      onClick: () => setDrawerOpen(true)
     },
     {
       key: 'archive',
@@ -125,19 +266,10 @@ export default function AppointmentManager() {
       key: 'reschedule',
       label: 'Reschedule Selected',
       icon: <CalendarOutlined />,
-      disabled: selectedAppointments.length === 0,
-      onClick: () => console.log('Reschedule appointments:', selectedAppointments)
+      disabled: selectedRowKeys.length === 0,
+      onClick: () => console.log('Reschedule appointments:', selectedRowKeys)
     }
   ];
-
-  const handleSelectionChange = (selectedIds: string[]) => {
-    setSelectedAppointments(selectedIds);
-  };
-
-  const handleTaskClick = (taskData: GanttTask) => {
-    console.log('Task clicked:', taskData);
-    setShowDrawer(true);
-  };
 
   return (
     <div style={{ padding: '24px', height: 'calc(100vh - 120px)' }}>
@@ -145,17 +277,23 @@ export default function AppointmentManager() {
         title="Appointment Manager"
         filterConfig={filterConfig}
         actions={actions}
-        showDrawer={showDrawer}
-        onDrawerClose={() => setShowDrawer(false)}
-        drawerTitle="Appointment Details"
-        drawerWidth={400}
+        drawerOpen={drawerOpen}
+        onDrawerClose={() => {
+          setDrawerOpen(false);
+          setSelectedAppointment(null);
+        }}
+        drawerTitle={selectedAppointment ? 'Appointment Details' : 'New Appointment'}
+        drawerWidth={450}
+        drawerVisualArea={getAppointmentVisualArea()}
+        drawerQuickActions={getAppointmentQuickActions()}
+        drawerSections={getAppointmentSections()}
+        showSaveDiscardPanel={false}
       >
         <GanttChart
-          tasks={appointmentTasks}
+          tasks={tasks}
           resources={resources}
-          onSelectionChange={handleSelectionChange}
-          onTaskClick={handleTaskClick}
           height="100%"
+          onTaskClick={handleTaskClick}
         />
       </AbstractPageView>
     </div>
