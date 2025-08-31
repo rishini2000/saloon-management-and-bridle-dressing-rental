@@ -80,6 +80,11 @@ export const DataTable: React.FC<DataTableProps> = ({
         pagination={false}
         scroll={{ y: typeof height === 'number' ? height - 50 : 'calc(100% - 50px)' }}
         size="small"
+        style={{
+          '--ant-table-border-color': 'var(--theme-border)',
+          '--ant-table-header-bg': 'var(--theme-surface)',
+          '--ant-table-row-hover-bg': 'var(--theme-surface-hover)',
+        } as React.CSSProperties}
       />
     </div>
   );
