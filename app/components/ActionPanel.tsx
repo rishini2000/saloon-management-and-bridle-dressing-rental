@@ -23,9 +23,27 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ actions, className }) 
   const [visibleActions, setVisibleActions] = useState<Record<string, boolean>>({});
 
   const getVisibleActions = () => {
-    return actions.filter(action => {
+    const filtered = actions.filter(action => {
       const isVisible = action.visible !== false && (visibleActions[action.key] !== false);
       return isVisible;
+    });
+
+    // Sort buttons: Archive first, New last, others by priority/importance
+    return filtered.sort((a, b) => {
+      // Archive button goes first (leftmost)
+      if (a.key.toLowerCase().includes('archive')) return -1;
+      if (b.key.toLowerCase().includes('archive')) return 1;
+      
+      // New button goes last (rightmost)
+      if (a.key.toLowerCase().includes('new')) return 1;
+      if (b.key.toLowerCase().includes('new')) return -1;
+      
+      // For other buttons, maintain original order or sort by importance
+      // Primary buttons come before default buttons
+      if (a.type === 'primary' && b.type !== 'primary') return 1;
+      if (b.type === 'primary' && a.type !== 'primary') return -1;
+      
+      return 0;
     });
   };
 

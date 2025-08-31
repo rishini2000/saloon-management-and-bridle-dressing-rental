@@ -213,27 +213,6 @@ export const GanttChart: React.FC<GanttProps> = ({
         ))}
       </div>
       
-      {selectedTasks.length > 0 && (
-        <div style={{ 
-          marginTop: '16px', 
-          padding: '12px', 
-          backgroundColor: 'var(--theme-primary-light)', 
-          borderRadius: '6px',
-          borderLeft: '4px solid var(--theme-primary)'
-        }}>
-          <strong>Selected Appointments:</strong> {selectedTasks.length}
-          <Button 
-            size="small" 
-            style={{ marginLeft: '12px' }}
-            onClick={() => {
-              setSelectedTasks([]);
-              if (onSelectionChange) onSelectionChange([]);
-            }}
-          >
-            Clear Selection
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
